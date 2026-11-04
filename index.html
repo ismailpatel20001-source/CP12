@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3a3a3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CP12">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<title>CP12 Gas Safety Record</title>
+<style>
+  :root { --dark:#3a3a3a; --yellow:#fff38a; --pale:#fffce8; --line:#888; --ink:#111; --bg:#ddd; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:Arial, Helvetica, sans-serif; color:var(--ink); background:var(--bg); font-size:14px; }
+  header { background:var(--dark); color:#fff; padding:10px 14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; position:sticky; top:0; z-index:5; }
+  header h1 { font-size:18px; margin:0; letter-spacing:.5px; flex:1; min-width:180px; }
+  header .serial { background:#fff; color:#000; padding:4px 8px; border-radius:3px; font-size:12px; }
+  header input.serial-in { width:150px; font-size:14px; padding:4px; border:0; }
+  .bar { display:flex; gap:8px; flex-wrap:wrap; padding:8px 14px; background:#f4f4f4; border-bottom:1px solid #ccc; position:sticky; top:52px; z-index:4; align-items:center; }
+  button { font-size:14px; padding:8px 12px; border:1px solid #333; background:#fff; border-radius:4px; cursor:pointer; }
+  button.primary { background:var(--dark); color:#fff; }
+  button.tab.on { background:#ffe500; color:#000; border-color:#000; font-weight:bold; }
+  #status { font-size:12px; color:#555; margin-left:auto; }
+  main { padding:10px; max-width:1100px; margin:0 auto; }
+  section { background:var(--yellow); border:1px solid #444; margin-bottom:12px; }
+  section > h2 { margin:0; font-size:13px; padding:6px 8px; background:#ffe500; border-bottom:1px solid #444; }
+  .fields { display:grid; grid-template-columns:1fr; background:var(--pale); }
+  @media (min-width:700px){ .fields.two { grid-template-columns:1fr 1fr; } }
+  .fld { display:flex; flex-direction:column; padding:6px 8px; border-bottom:1px solid #ccc; }
+  .fld label { font-size:12px; margin-bottom:3px; }
+  .fld input, .fld select { font-size:15px; padding:6px; border:1px solid #999; border-radius:3px; width:100%; background:#fff; }
+  .wrap { overflow-x:auto; background:var(--pale); }
+  table.in { border-collapse:collapse; width:100%; min-width:680px; background:var(--pale); }
+  table.in th, table.in td { border:1px solid #444; padding:3px; font-size:11px; text-align:center; vertical-align:middle; }
+  table.in th { background:#fff; font-weight:bold; }
+  table.in td.num { width:24px; font-weight:bold; background:#fff; }
+  table.in td input, table.in td select { width:100%; min-width:60px; font-size:14px; padding:6px 2px; border:1px solid #bbb; background:#fff; text-align:center; }
+  .note { font-size:12px; padding:6px 8px; background:var(--pale); }
+  .outcome-row { display:grid; grid-template-columns:1fr 120px; gap:8px; align-items:center; padding:6px 8px; border-bottom:1px solid #ccc; background:var(--pale); }
+  .outcome-row select { font-size:15px; padding:6px; }
+
+  /* ----- certificate view ----- */
+  .certwrap { overflow-x:auto; padding:10px; }
+  .cert { width:1123px; height:794px; background:var(--yellow); border:1px solid #333; display:flex; flex-direction:column; font-family:Arial, Helvetica, sans-serif; color:#000; zoom:1; }
+  .c-head { background:var(--dark); color:#fff; height:64px; display:flex; align-items:center; padding:0 12px; gap:12px; flex:0 0 auto; }
+  .c-serial { background:#fff; color:#000; width:170px; height:44px; padding:4px 8px; box-sizing:border-box; }
+  .c-serial .sm { font-size:8px; }
+  .c-serial .sv { font-size:16px; font-weight:bold; letter-spacing:1px; margin-top:2px; min-height:18px; }
+  .c-title { flex:1; text-align:center; }
+  .c-title .t { font-size:26px; font-weight:bold; letter-spacing:.5px; }
+  .c-title .d { font-size:7.5px; line-height:1.3; margin-top:2px; }
+  .c-badge { width:84px; height:52px; position:relative; }
+  .c-badge .tri { position:absolute; right:0; top:0; width:0; height:0; border-top:52px solid #ffd200; border-left:52px solid transparent; }
+  .c-badge span { position:absolute; right:4px; bottom:2px; font-size:10px; font-weight:bold; color:#000; text-align:right; line-height:1; }
+  .c-body { flex:1 1 auto; display:grid; grid-template-columns:27% 1fr; gap:8px; padding:8px; min-height:0; }
+  .c-left, .c-right { display:flex; flex-direction:column; gap:6px; min-height:0; }
+  .box { background:#fffdf0; border:1px solid #444; display:flex; flex-direction:column; }
+  .box .bt { background:var(--yellow); font-weight:bold; font-size:10px; padding:3px 6px; border-bottom:1px solid #444; }
+  .box .bd { padding:4px 6px; display:flex; flex-direction:column; gap:3px; }
+  .ln { display:flex; gap:5px; font-size:9.5px; align-items:flex-end; }
+  .ln .lb { white-space:nowrap; }
+  .ln .uv { flex:1; border-bottom:1px solid #777; min-height:12px; padding:0 3px; font-weight:bold; font-size:10px; }
+  .tb { background:#fffdf0; border:1px solid #444; }
+  .tb .tt { background:var(--yellow); font-weight:bold; font-size:10px; text-align:center; padding:2px; border-bottom:1px solid #444; }
+  table.c { border-collapse:collapse; width:100%; table-layout:fixed; font-size:8.5px; }
+  table.c th, table.c td { border:1px solid #444; padding:2px 3px; text-align:center; overflow:hidden; }
+  table.c th { font-weight:normal; background:#fff; font-size:7.5px; line-height:1.2; }
+  table.c td { height:14px; font-weight:bold; font-size:9px; }
+  table.c td.num { font-weight:normal; width:18px; }
+  .c-foot { flex:0 0 auto; display:grid; grid-template-columns:37% 1fr 15%; gap:8px; padding:0 8px 6px; }
+  .outc, .issued, .attn { background:#fffdf0; border:1px solid #444; padding:4px 6px; }
+  .outc .r { display:flex; justify-content:space-between; font-size:9px; padding:2px 0; border-bottom:1px solid #ddd; }
+  .outc .r b { font-size:10px; min-width:60px; text-align:right; }
+  .issued .ln { margin:3px 0; }
+  .attn { background:var(--dark); color:#fff; text-align:center; display:flex; flex-direction:column; justify-content:center; }
+  .attn .big { font-size:13px; font-weight:bold; }
+  .attn .due { background:#fff; color:#000; margin:6px 4px 0; padding:6px; font-weight:bold; font-size:11px; min-height:28px; }
+  .c-note { font-size:7px; text-align:right; padding:0 8px 4px; }
+
+  @page { size:A4 landscape; margin:8mm; }
+  @media print {
+    header, .bar, #formView, #status { display:none !important; }
+    #certView { display:block !important; }
+    body { background:#fff; }
+    .certwrap { padding:0; overflow:visible; }
+    .cert { zoom:1 !important; width:281mm; height:194mm; border:none; }
+  }
+</style>
+
+<header>
+  <h1>GAS SAFETY RECORD (CP12)</h1>
+  <span class="serial">Serial No <input class="serial-in" id="serial" type="text"></span>
+</header>
+<div class="bar">
+  <button class="tab on" id="tabForm" onclick="showTab('form')">Enter details</button>
+  <button class="tab" id="tabCert" onclick="showTab('cert')">Certificate</button>
+  <button class="primary" onclick="printCert()">Print / Save as PDF</button>
+  <button onclick="exportJSON()">Export backup</button>
+  <button onclick="importJSON()">Import backup</button>
+  <button onclick="clearForm(this)">Clear form</button>
+  <span id="status">Saved on this device</span>
+</div>
+
+<main id="formView">
+  <div style="display:grid;grid-template-columns:1fr;gap:0 12px" id="formGrid">
+  <section>
+    <h2>Details of Registered Business</h2>
+    <div class="fields two">
+      <div class="fld"><label>Business name</label><input data-k="biz_name"></div>
+      <div class="fld"><label>Gas Safe Register No</label><input data-k="biz_gsr_no"></div>
+      <div class="fld"><label>Registered Engineer's Name</label><input data-k="eng_name"></div>
+      <div class="fld"><label>Gas Safe Register Licence Number</label><input data-k="eng_licence"></div>
+      <div class="fld"><label>Business address</label><input data-k="biz_addr"></div>
+      <div class="fld"><label>Postcode</label><input data-k="biz_pc"></div>
+      <div class="fld"><label>Contact No</label><input data-k="biz_tel" type="tel"></div>
+    </div>
+  </section>
+  <section>
+    <h2>Details of Site</h2>
+    <div class="fields two">
+      <div class="fld"><label>Name (Mr/Mrs/Miss/Ms)</label><input data-k="site_name"></div>
+      <div class="fld"><label>Address</label><input data-k="site_addr"></div>
+      <div class="fld"><label>Postcode</label><input data-k="site_pc"></div>
+      <div class="fld"><label>Contact No</label><input data-k="site_tel" type="tel"></div>
+    </div>
+  </section>
+  <section>
+    <h2>Details of Customer / Landlord (or agent where appropriate)</h2>
+    <div class="fields two">
+      <div class="fld"><label>Name (Mr/Mrs/Miss/Ms)</label><input data-k="cust_name"></div>
+      <div class="fld"><label>Address</label><input data-k="cust_addr"></div>
+      <div class="fld"><label>Postcode</label><input data-k="cust_pc"></div>
+      <div class="fld"><label>Contact No</label><input data-k="cust_tel" type="tel"></div>
+    </div>
+  </section>
+  <section>
+    <h2>Number of Appliances tested</h2>
+    <div class="fields"><div class="fld"><input data-k="n_appl" type="number" min="0" max="5" style="max-width:160px"></div></div>
+  </section>
+  <section><h2>Appliance Details</h2><div class="wrap"><table class="in" id="appl"></table></div></section>
+  <section>
+    <h2>Inspection Details</h2>
+    <div class="wrap"><table class="in" id="insp"></table></div>
+    <div class="note">Record each appliance on the same row number as the Appliance Details table.</div>
+  </section>
+  <section><h2>Defect(s) Identified</h2><div class="wrap"><table class="in" id="defects"></table></div></section>
+  <section><h2>Remedial Action Taken (numbers correspond to defects above)</h2><div class="wrap"><table class="in" id="remedial"></table></div></section>
+  <section>
+    <h2>Outcome checks (select as appropriate)</h2>
+    <div class="outcome-row"><span>Outcome of gas installation pipework visual inspection?</span>
+      <select data-k="oc1"><option></option><option>Pass</option><option>Fail</option><option>NA</option></select></div>
+    <div class="outcome-row"><span>Outcome of gas supply pipework visual inspection?</span>
+      <select data-k="oc2"><option></option><option>Pass</option><option>Fail</option><option>NA</option></select></div>
+    <div class="outcome-row"><span>Is the Emergency Control Valve access satisfactory?</span>
+      <select data-k="oc3"><option></option><option>Pass</option><option>Fail</option></select></div>
+    <div class="outcome-row"><span>Outcome of gas tightness test?</span>
+      <select data-k="oc4"><option></option><option>Pass</option><option>Fail</option><option>NA</option></select></div>
+    <div class="outcome-row"><span>Is the Protective Equipotential Bonding satisfactory?</span>
+      <select data-k="oc5"><option></option><option>Pass</option><option>Fail</option></select></div>
+  </section>
+  <section>
+    <h2>Signatures and dates</h2>
+    <div class="fields two">
+      <div class="fld"><label>Record issued by (engineer's name)</label><input data-k="sig_issued_by"></div>
+      <div class="fld"><label>Print name</label><input data-k="sig_print"></div>
+      <div class="fld"><label>Received by (tenant / landlord / homeowner / agent)</label><input data-k="sig_received_by"></div>
+      <div class="fld"><label>Date appliance(s)/flue(s) checked</label><input data-k="date_checked" type="date"></div>
+      <div class="fld"><label>Next safety check due by</label><input data-k="next_due" type="date"></div>
+    </div>
+  </section>
+  </div>
+</main>
+
+<main id="certView" hidden>
+  <div class="certwrap"><div class="cert" id="cert"></div></div>
+</main>
+
+<script>
+const KEY = "cp12-record-v2";
+const APPL_COLS = [["loc","Location of","text"],["type","Type","text"],["mfr","Manufacturer","text"],["model","Model","text"],["owned","Owned by Landlord (Yes/No)","yn"],["insp","Inspected (Yes/No)","yn"],["chim","Type of chimney/flue","text"]];
+const INSP_COLS = [["press","Operating pressure (mbar) or heat input (kW/h or Btu/h)","text"],["safety","Operation of safety device(s)","pfna"],["vent","Ventilation satisfactory","yn"],["visual","Visual condition of chimney flue and termination","pf"],["flueop","Chimney/flue operation checks","pf"],["analyser","Combustion analyser reading (if applicable)","text"],["serviced","Appliance serviced","yn"],["co_fit","CO alarm fitted","yn"],["co_test","CO alarm tested","pfna"],["safe","SAFE TO USE","yn"]];
+const DEF_COLS = [["defect","Defect(s) identified","text"],["giusp","GIUSP classification (AR, ID)","text"],["warn","Warning/advisory record serial no.","text"]];
+const REM_COLS = [["remedy","Remedial action taken","text"]];
+
+function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function optionsFor(type){
+  const opts = {yn:["","Yes","No"], pf:["","Pass","Fail"], pfna:["","Pass","Fail","NA"]}[type];
+  return opts ? opts.map(o=>`<option>${o}</option>`).join("") : null;
+}
+function cellHTML(prefix, row, col){
+  const id = `${prefix}_${row}_${col[0]}`;
+  const opts = optionsFor(col[2]);
+  return opts ? `<td><select data-k="${id}">${opts}</select></td>` : `<td><input data-k="${id}" type="text"></td>`;
+}
+function buildTable(tableId, prefix, cols, rows){
+  const t = document.getElementById(tableId);
+  let head = "<tr><th>No.</th>" + cols.map(c=>`<th>${c[1]}</th>`).join("") + "</tr>";
+  let body = "";
+  for(let r=1;r<=rows;r++) body += `<tr><td class="num">${r}</td>` + cols.map(c=>cellHTML(prefix,r,c)).join("") + "</tr>";
+  t.innerHTML = head + body;
+}
+buildTable("appl","appl",APPL_COLS,5);
+buildTable("insp","insp",INSP_COLS,5);
+buildTable("defects","def",DEF_COLS,5);
+buildTable("remedial","rem",REM_COLS,5);
+
+// ----- save / restore -----
+function collect(){
+  const data = {};
+  document.querySelectorAll("[data-k]").forEach(el => data[el.dataset.k] = el.value);
+  data.serial = document.getElementById("serial").value;
+  return data;
+}
+function apply(data){
+  document.querySelectorAll("[data-k]").forEach(el => { if(data[el.dataset.k] !== undefined) el.value = data[el.dataset.k]; });
+  if(data.serial !== undefined) document.getElementById("serial").value = data.serial;
+}
+let saveTimer;
+function save(){
+  try{
+    localStorage.setItem(KEY, JSON.stringify(collect()));
+    document.getElementById("status").textContent = "Saved on this device " + new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+  }catch(e){ document.getElementById("status").textContent = "Could not save on this device; use Copy backup."; }
+}
+document.addEventListener("input", ()=>{ clearTimeout(saveTimer); saveTimer = setTimeout(save, 400); });
+document.addEventListener("change", save);
+try{ const saved = localStorage.getItem(KEY); if(saved) apply(JSON.parse(saved)); }catch(e){}
+
+// ----- certificate -----
+function line(label, val){
+  return `<div class="ln"><span class="lb">${esc(label)}</span><span class="uv">${esc(val)}</span></div>`;
+}
+function renderCert(){
+  const d = collect();
+  const g = k => d[k] ?? "";
+  const applRows = [1,2,3,4,5].map(r => `<tr><td class="num">${r}</td>` +
+    APPL_COLS.map(c => `<td>${esc(g(`appl_${r}_${c[0]}`))}</td>`).join("") + "</tr>").join("");
+  const inspRows = [1,2,3,4,5].map(r => `<tr><td class="num">${r}</td>` +
+    INSP_COLS.map(c => `<td>${esc(g(`insp_${r}_${c[0]}`))}</td>`).join("") + "</tr>").join("");
+  const defRows = [1,2,3,4,5].map(r => `<tr><td class="num">${r}</td>` +
+    `<td style="text-align:left">${esc(g(`def_${r}_defect`))}</td>` +
+    `<td>${esc(g(`def_${r}_giusp`))}</td><td>${esc(g(`def_${r}_warn`))}</td></tr>`).join("");
+  const remRows = [1,2,3,4,5].map(r => `<tr><td class="num">${r}</td>` +
+    `<td style="text-align:left">${esc(g(`rem_${r}_remedy`))}</td></tr>`).join("");
+  const oc = (k, label) => `<div class="r"><span>${label}</span><b>${esc(g(k))}</b></div>`;
+
+  document.getElementById("cert").innerHTML = `
+  <div class="c-head">
+    <div class="c-serial"><div class="sm">Serial No</div><div class="sv">${esc(d.serial)}</div></div>
+    <div class="c-title"><div class="t">GAS SAFETY RECORD</div>
+      <div class="d">This record can be used to document the outcomes of the checks and tests required by The Gas Safety (Installation and Use) Regulations.</div></div>
+    <div class="c-badge"><div class="tri"></div><span>gas<br>safe</span></div>
+  </div>
+  <div class="c-body">
+    <div class="c-left">
+      <div class="box"><div class="bt">Details of Registered Business</div><div class="bd">
+        ${line("Gas Safe Register No", g("biz_gsr_no"))}
+        ${line("Registered Engineer's Name", g("eng_name"))}
+        ${line("Gas Safe Register Licence Number", g("eng_licence"))}
+        ${line("Business", g("biz_name"))}
+        ${line("Address", g("biz_addr"))}
+        ${line("Postcode", g("biz_pc"))}
+        ${line("Contact No", g("biz_tel"))}
+      </div></div>
+      <div class="box"><div class="bt">Details of Site</div><div class="bd">
+        ${line("Name (Mr/Mrs/Miss/Ms)", g("site_name"))}
+        ${line("Address", g("site_addr"))}
+        ${line("Postcode", g("site_pc"))}
+        ${line("Contact No", g("site_tel"))}
+      </div></div>
+      <div class="box"><div class="bt">Details of Customer/Landlord</div><div class="bd">
+        ${line("Name (Mr/Mrs/Miss/Ms)", g("cust_name"))}
+        ${line("Address", g("cust_addr"))}
+        ${line("Postcode", g("cust_pc"))}
+        ${line("Contact No", g("cust_tel"))}
+      </div></div>
+      <div class="box"><div class="bd">${line("Number of Appliances tested", g("n_appl"))}</div></div>
+    </div>
+    <div class="c-right">
+      <div class="tb"><div class="tt">Appliance Details</div>
+        <table class="c"><colgroup><col style="width:18px"><col><col><col><col><col style="width:62px"><col style="width:62px"><col style="width:90px"></colgroup>
+          <tr><th>No.</th><th>Location of</th><th>Type</th><th>Manufacturer</th><th>Model</th><th>Owned by Landlord Yes/No</th><th>Inspected Yes/No</th><th>Type of chimney/flue</th></tr>
+          ${applRows}</table></div>
+      <div class="tb"><div class="tt">Inspection Details</div>
+        <table class="c"><colgroup><col style="width:18px"><col><col><col><col><col><col><col><col><col><col></colgroup>
+          <tr><th>No.</th><th>Operating pressure (mbar) / heat input</th><th>Safety device(s) Pass/Fail/NA</th><th>Ventilation Yes/No</th><th>Visual condition flue Pass/Fail</th><th>Chimney/flue operation Pass/Fail</th><th>Combustion analyser reading</th><th>Serviced Yes/No</th><th>CO alarm fitted Yes/No</th><th>CO alarm tested Pass/Fail/NA</th><th>SAFE TO USE Yes/No</th></tr>
+          ${inspRows}</table></div>
+      <div class="tb"><div class="tt">Defect(s) Identified</div>
+        <table class="c"><colgroup><col style="width:18px"><col><col style="width:150px"><col style="width:170px"></colgroup>
+          <tr><th>No.</th><th>Defect(s) identified</th><th>GIUSP classification eg. AR, ID</th><th>Warning/Advisory Record insert form serial No</th></tr>
+          ${defRows}</table></div>
+      <div class="tb"><div class="tt">Remedial Action Taken</div>
+        <table class="c"><colgroup><col style="width:18px"><col></colgroup>
+          <tr><th>No.</th><th>Remedial action taken (numbers correspond to defects above)</th></tr>
+          ${remRows}</table></div>
+    </div>
+  </div>
+  <div class="c-foot">
+    <div class="outc">
+      ${oc("oc1","Outcome of gas installation pipework visual inspection?")}
+      ${oc("oc2","Outcome of gas supply pipework visual inspection?")}
+      ${oc("oc3","Is the Emergency Control Valve access satisfactory?")}
+      ${oc("oc4","Outcome of gas tightness test?")}
+      ${oc("oc5","Is the Protective Equipotential Bonding satisfactory?")}
+    </div>
+    <div class="issued">
+      ${line("Record issued by: Signature", g("sig_issued_by"))}
+      ${line("Print Name", g("sig_print"))}
+      ${line("Received by: Signature (Tenant/Landlord/Homeowner/Agent)", g("sig_received_by"))}
+      ${line("Date appliance(s)/flue(s) checked", g("date_checked"))}
+    </div>
+    <div class="attn">
+      <div class="big">ATTENTION</div>
+      <div>Next safety check due by:</div>
+      <div class="due">${esc(g("next_due"))}</div>
+    </div>
+  </div>
+  <div class="c-note">Top copy: Landlord/Homeowner/Managing Agent &nbsp; Green copy: Tenant &nbsp; Yellow copy: Registered Business</div>`;
+  fitCert();
+}
+function fitCert(){
+  const cert = document.getElementById("cert");
+  const avail = document.querySelector(".certwrap").clientWidth - 24;
+  cert.style.zoom = Math.min(1, avail / 1125);
+}
+window.addEventListener("resize", fitCert);
+
+function showTab(which){
+  const isCert = which === "cert";
+  document.getElementById("formView").hidden = isCert;
+  document.getElementById("certView").hidden = !isCert;
+  document.getElementById("tabForm").classList.toggle("on", !isCert);
+  document.getElementById("tabCert").classList.toggle("on", isCert);
+  if(isCert) renderCert();
+  window.scrollTo(0,0);
+}
+
+// ----- backup and clear -----
+function printCert(){
+  renderCert(); showTab("cert");
+  setTimeout(()=>window.print(), 150);
+}
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(collect(), null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  const serial = (document.getElementById("serial").value || "CP12").replace(/[^A-Za-z0-9-]/g,"_");
+  a.href = URL.createObjectURL(blob); a.download = `CP12_${serial}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function importJSON(){
+  const inp = document.createElement("input");
+  inp.type = "file"; inp.accept = "application/json,.json";
+  inp.onchange = async () => {
+    const file = inp.files[0]; if(!file) return;
+    try{ apply(JSON.parse(await file.text())); save(); }
+    catch(e){ alert("That file could not be read."); }
+  };
+  inp.click();
+}
+let clearArmed = false;
+function clearForm(btn){
+  if(!clearArmed){
+    clearArmed = true; btn.textContent = "Tap again to clear";
+    setTimeout(()=>{ clearArmed = false; btn.textContent = "Clear form"; }, 4000);
+    return;
+  }
+  clearArmed = false; btn.textContent = "Clear form";
+  document.querySelectorAll("[data-k]").forEach(el => el.value = "");
+  document.getElementById("serial").value = "";
+  save();
+  if(!document.getElementById("certView").hidden) renderCert();
+}
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
+</script>
+
+</body>
+</html>
