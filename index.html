@@ -81,6 +81,7 @@
 
   @page { size:A4 landscape; margin:8mm; }
   @media print {
+    .cert, .cert * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     header, .bar, #formView, #status { display:none !important; }
     #certView { display:block !important; }
     body { background:#fff; }
