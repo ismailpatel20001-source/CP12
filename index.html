@@ -7,45 +7,80 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="CP12">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>CP12 Gas Safety Record</title>
 <style>
-  :root { --dark:#3a3a3a; --yellow:#fff38a; --pale:#fffce8; --line:#888; --ink:#111; --bg:#ddd; }
+  :root { --dark:#3a3a3a; --yellow:#fff38a; --pale:#fffce8; --ink:#111; }
   * { box-sizing:border-box; }
-  body { margin:0; font-family:Arial, Helvetica, sans-serif; color:var(--ink); background:var(--bg); font-size:14px; }
-  header { background:var(--dark); color:#fff; padding:10px 14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; position:sticky; top:0; z-index:5; }
-  header h1 { font-size:18px; margin:0; letter-spacing:.5px; flex:1; min-width:180px; }
-  header .serial { background:#fff; color:#000; padding:4px 8px; border-radius:3px; font-size:12px; }
-  header input.serial-in { width:150px; font-size:14px; padding:4px; border:0; }
-  .bar { display:flex; gap:8px; flex-wrap:wrap; padding:8px 14px; background:#f4f4f4; border-bottom:1px solid #ccc; position:sticky; top:52px; z-index:4; align-items:center; }
-  button { font-size:14px; padding:8px 12px; border:1px solid #333; background:#fff; border-radius:4px; cursor:pointer; }
+  body { margin:0; font-family:Arial, Helvetica, sans-serif; color:var(--ink); background:#e9e9e9; font-size:15px; }
+  [hidden] { display:none !important; }
+  header { background:var(--dark); color:#fff; padding:10px 12px; position:sticky; top:0; z-index:5; }
+  header h1 { font-size:17px; margin:0 0 8px; letter-spacing:.4px; }
+  .nav { display:flex; gap:6px; flex-wrap:wrap; }
+  button { font:inherit; font-size:14px; padding:8px 10px; border:1px solid #333; background:#fff; border-radius:4px; cursor:pointer; }
+  .nav button { background:#555; color:#fff; border-color:#777; }
+  .nav button.on { background:#ffe500; color:#000; border-color:#000; font-weight:bold; }
   button.primary { background:var(--dark); color:#fff; }
-  button.tab.on { background:#ffe500; color:#000; border-color:#000; font-weight:bold; }
-  #status { font-size:12px; color:#555; margin-left:auto; }
-  main { padding:10px; max-width:1100px; margin:0 auto; }
+  button.danger { color:#a00; }
+  button:disabled { opacity:.6; }
+  .status { font-size:12px; color:#333; padding:6px 12px; min-height:22px; }
+  main { padding:10px 12px 40px; max-width:1200px; margin:0 auto; }
+  .due-banner { background:#fff3b0; border:1px solid #c9a800; padding:10px; border-radius:6px; margin-bottom:10px; font-size:14px; }
+  .drow { margin-top:4px; font-size:13px; }
+  .search { width:100%; font-size:16px; padding:10px; border:1px solid #888; border-radius:6px; margin-bottom:10px; }
+  .card { background:#fff; border:1px solid #bbb; border-radius:8px; padding:10px; margin-bottom:8px; }
+  .ctop { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
+  .cserial { font-weight:bold; font-size:16px; }
+  .muted { color:#666; font-size:12px; }
+  .pill { font-size:12px; padding:4px 8px; border-radius:12px; white-space:nowrap; font-weight:bold; }
+  .pill.ok { background:#d9f5df; color:#0a5b1d; }
+  .pill.warn { background:#ffe9a8; color:#6b4f00; }
+  .pill.bad { background:#ffd0d0; color:#8a0000; }
+  .cbtns { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  .empty { color:#555; text-align:center; padding:30px 10px; }
+  .toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .toolbar label { font-size:13px; }
+  .toolbar input { font-size:16px; padding:8px; width:180px; }
+  .cols { display:grid; grid-template-columns:1fr; gap:12px; }
+  @media (min-width:900px) { .cols { grid-template-columns:1fr 1fr; } }
   section { background:var(--yellow); border:1px solid #444; margin-bottom:12px; }
   section > h2 { margin:0; font-size:13px; padding:6px 8px; background:#ffe500; border-bottom:1px solid #444; }
   .fields { display:grid; grid-template-columns:1fr; background:var(--pale); }
-  @media (min-width:700px){ .fields.two { grid-template-columns:1fr 1fr; } }
+  @media (min-width:600px) { .fields.two { grid-template-columns:1fr 1fr; } }
   .fld { display:flex; flex-direction:column; padding:6px 8px; border-bottom:1px solid #ccc; }
   .fld label { font-size:12px; margin-bottom:3px; }
-  .fld input, .fld select { font-size:15px; padding:6px; border:1px solid #999; border-radius:3px; width:100%; background:#fff; }
+  input, select { font:inherit; font-size:15px; padding:6px; border:1px solid #999; border-radius:3px; background:#fff; max-width:100%; }
+  .fld input, .fld select { width:100%; }
   .wrap { overflow-x:auto; background:var(--pale); }
   table.in { border-collapse:collapse; width:100%; min-width:680px; background:var(--pale); }
   table.in th, table.in td { border:1px solid #444; padding:3px; font-size:11px; text-align:center; vertical-align:middle; }
-  table.in th { background:#fff; font-weight:bold; }
+  table.in th { background:#fff; }
   table.in td.num { width:24px; font-weight:bold; background:#fff; }
-  table.in td input, table.in td select { width:100%; min-width:60px; font-size:14px; padding:6px 2px; border:1px solid #bbb; background:#fff; text-align:center; }
+  table.in td input, table.in td select { width:100%; min-width:60px; font-size:14px; padding:6px 2px; text-align:center; }
   .note { font-size:12px; padding:6px 8px; background:var(--pale); }
   .outcome-row { display:grid; grid-template-columns:1fr 120px; gap:8px; align-items:center; padding:6px 8px; border-bottom:1px solid #ccc; background:var(--pale); }
-  .outcome-row select { font-size:15px; padding:6px; }
+  .sigbox { background:var(--pale); padding:8px; border-top:1px solid #ccc; }
+  .sigbox .lbl { font-size:12px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center; }
+  canvas.pad { width:100%; height:110px; background:#fff; border:1px solid #888; border-radius:3px; display:block; touch-action:none; }
+  .appl-form { display:grid; grid-template-columns:1fr; gap:8px; background:var(--pale); padding:10px; border:1px solid #444; margin-bottom:12px; }
+  @media (min-width:700px) { .appl-form { grid-template-columns:1fr 1fr 1fr auto; } }
+  .lib { background:#fff; border:1px solid #bbb; border-radius:6px; }
+  .lib .it { padding:8px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; gap:8px; align-items:center; font-size:14px; }
+  .setgrid { display:grid; grid-template-columns:1fr; gap:12px; }
+  @media (min-width:800px) { .setgrid { grid-template-columns:1fr 1fr; } }
+  .panel { background:#fff; border:1px solid #bbb; border-radius:8px; padding:12px; }
+  .panel h3 { margin:0 0 8px; font-size:15px; }
+  .panel .row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+  .panel .fld { padding:4px 0; border:0; }
+  .panel textarea { font-size:13px; width:100%; min-height:80px; }
+  .btnrow { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
 
-  /* ----- certificate view ----- */
-  .certwrap { overflow-x:auto; padding:10px; }
-  .cert { width:1123px; height:794px; background:var(--yellow); border:1px solid #333; display:flex; flex-direction:column; font-family:Arial, Helvetica, sans-serif; color:#000; zoom:1; }
+  /* ----- certificate ----- */
+  .certwrap { overflow-x:auto; padding:10px; background:#d6d6d6; }
+  .cert { width:1123px; height:794px; background:var(--yellow); border:1px solid #333; display:flex; flex-direction:column; font-family:Arial, Helvetica, sans-serif; color:#000; }
   .c-head { background:var(--dark); color:#fff; height:64px; display:flex; align-items:center; padding:0 12px; gap:12px; flex:0 0 auto; }
-  .c-serial { background:#fff; color:#000; width:170px; height:44px; padding:4px 8px; box-sizing:border-box; }
+  .c-serial { background:#fff; color:#000; width:170px; height:44px; padding:4px 8px; }
   .c-serial .sm { font-size:8px; }
   .c-serial .sv { font-size:16px; font-weight:bold; letter-spacing:1px; margin-top:2px; min-height:18px; }
   .c-title { flex:1; text-align:center; }
@@ -53,7 +88,7 @@
   .c-title .d { font-size:7.5px; line-height:1.3; margin-top:2px; }
   .c-badge { width:84px; height:52px; position:relative; }
   .c-badge .tri { position:absolute; right:0; top:0; width:0; height:0; border-top:52px solid #ffd200; border-left:52px solid transparent; }
-  .c-badge span { position:absolute; right:4px; bottom:2px; font-size:10px; font-weight:bold; color:#000; text-align:right; line-height:1; }
+  .c-badge span { position:absolute; right:4px; bottom:2px; font-size:10px; font-weight:bold; text-align:right; line-height:1; }
   .c-body { flex:1 1 auto; display:grid; grid-template-columns:27% 1fr; gap:8px; padding:8px; min-height:0; }
   .c-left, .c-right { display:flex; flex-direction:column; gap:6px; min-height:0; }
   .box { background:#fffdf0; border:1px solid #444; display:flex; flex-direction:column; }
@@ -62,6 +97,7 @@
   .ln { display:flex; gap:5px; font-size:9.5px; align-items:flex-end; }
   .ln .lb { white-space:nowrap; }
   .ln .uv { flex:1; border-bottom:1px solid #777; min-height:12px; padding:0 3px; font-weight:bold; font-size:10px; }
+  .sig { height:26px; max-width:100%; }
   .tb { background:#fffdf0; border:1px solid #444; }
   .tb .tt { background:var(--yellow); font-weight:bold; font-size:10px; text-align:center; padding:2px; border-bottom:1px solid #444; }
   table.c { border-collapse:collapse; width:100%; table-layout:fixed; font-size:8.5px; }
@@ -81,173 +117,484 @@
 
   @page { size:A4 landscape; margin:8mm; }
   @media print {
-    .cert, .cert * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    header, .bar, #formView, #status { display:none !important; }
-    #certView { display:block !important; }
+    .noprint { display:none !important; }
     body { background:#fff; }
-    .certwrap { padding:0; overflow:visible; }
+    .certwrap { padding:0; background:none; overflow:visible; }
     .cert { zoom:1 !important; width:281mm; height:194mm; border:none; }
+    .cert, .cert * { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
   }
 </style>
+</head>
+<body>
 
-<header>
-  <h1>GAS SAFETY RECORD (CP12)</h1>
-  <span class="serial">Serial No <input class="serial-in" id="serial" type="text"></span>
+<header class="noprint">
+  <h1>CP12 Gas Safety Record</h1>
+  <nav class="nav">
+    <button data-go="jobs" class="on">Jobs</button>
+    <button data-go="edit-new">New CP12</button>
+    <button data-go="appl">Appliances</button>
+    <button data-go="settings">Settings</button>
+  </nav>
 </header>
-<div class="bar">
-  <button class="tab on" id="tabForm" onclick="showTab('form')">Enter details</button>
-  <button class="tab" id="tabCert" onclick="showTab('cert')">Certificate</button>
-  <button class="primary" onclick="printCert()">Print / Save as PDF</button>
-  <button onclick="exportJSON()">Export backup</button>
-  <button onclick="importJSON()">Import backup</button>
-  <button onclick="clearForm(this)">Clear form</button>
-  <span id="status">Saved on this device</span>
-</div>
+<div class="status noprint" id="status"></div>
 
-<main id="formView">
-  <div style="display:grid;grid-template-columns:1fr;gap:0 12px" id="formGrid">
-  <section>
-    <h2>Details of Registered Business</h2>
-    <div class="fields two">
-      <div class="fld"><label>Business name</label><input data-k="biz_name"></div>
-      <div class="fld"><label>Gas Safe Register No</label><input data-k="biz_gsr_no"></div>
-      <div class="fld"><label>Registered Engineer's Name</label><input data-k="eng_name"></div>
-      <div class="fld"><label>Gas Safe Register Licence Number</label><input data-k="eng_licence"></div>
-      <div class="fld"><label>Business address</label><input data-k="biz_addr"></div>
-      <div class="fld"><label>Postcode</label><input data-k="biz_pc"></div>
-      <div class="fld"><label>Contact No</label><input data-k="biz_tel" type="tel"></div>
+<!-- Jobs -->
+<main id="jobsView">
+  <div id="due" class="due-banner" hidden></div>
+  <input id="search" class="search" type="search" placeholder="Search serial, name, address or postcode">
+  <div id="jobList"></div>
+</main>
+
+<!-- New / edit CP12 -->
+<main id="editView" hidden>
+  <div class="toolbar noprint">
+    <label>Serial No <input data-k="serial" id="serialIn" type="text"></label>
+    <button class="primary" id="btnSave">Save</button>
+    <button id="btnSaveView">Save and view certificate</button>
+    <button id="btnDiscard">Back to jobs</button>
+  </div>
+
+  <div class="cols">
+    <div>
+      <section>
+        <h2>Details of Registered Business</h2>
+        <div class="fields two">
+          <div class="fld"><label>Business name</label><input data-k="biz_name"></div>
+          <div class="fld"><label>Gas Safe Register No</label><input data-k="biz_gsr_no"></div>
+          <div class="fld"><label>Registered Engineer's Name</label><input data-k="eng_name"></div>
+          <div class="fld"><label>Gas Safe Register Licence Number</label><input data-k="eng_licence"></div>
+          <div class="fld"><label>Business address</label><input data-k="biz_addr"></div>
+          <div class="fld"><label>Postcode</label><input data-k="biz_pc"></div>
+          <div class="fld"><label>Contact No</label><input data-k="biz_tel" type="tel"></div>
+        </div>
+      </section>
+      <section>
+        <h2>Details of Site</h2>
+        <div class="fields two">
+          <div class="fld"><label>Name (Mr/Mrs/Miss/Ms)</label><input data-k="site_name" list="dl-sites"></div>
+          <div class="fld"><label>Address</label><input data-k="site_addr"></div>
+          <div class="fld"><label>Postcode</label><input data-k="site_pc"></div>
+          <div class="fld"><label>Contact No</label><input data-k="site_tel" type="tel"></div>
+        </div>
+      </section>
+      <section>
+        <h2>Details of Customer / Landlord (or agent where appropriate)</h2>
+        <div class="fields two">
+          <div class="fld"><label>Name (Mr/Mrs/Miss/Ms)</label><input data-k="cust_name" list="dl-custs"></div>
+          <div class="fld"><label>Address</label><input data-k="cust_addr"></div>
+          <div class="fld"><label>Postcode</label><input data-k="cust_pc"></div>
+          <div class="fld"><label>Contact No</label><input data-k="cust_tel" type="tel"></div>
+        </div>
+      </section>
+      <section>
+        <h2>Number of Appliances tested</h2>
+        <div class="fields"><div class="fld"><input data-k="n_appl" type="number" min="0" max="5" style="max-width:160px"></div></div>
+      </section>
     </div>
-  </section>
-  <section>
-    <h2>Details of Site</h2>
-    <div class="fields two">
-      <div class="fld"><label>Name (Mr/Mrs/Miss/Ms)</label><input data-k="site_name"></div>
-      <div class="fld"><label>Address</label><input data-k="site_addr"></div>
-      <div class="fld"><label>Postcode</label><input data-k="site_pc"></div>
-      <div class="fld"><label>Contact No</label><input data-k="site_tel" type="tel"></div>
+
+    <div>
+      <section><h2>Appliance Details</h2><div class="wrap"><table class="in" id="appl"></table></div></section>
+      <section>
+        <h2>Inspection Details</h2>
+        <div class="wrap"><table class="in" id="insp"></table></div>
+        <div class="note">Record each appliance on the same row number as the Appliance Details table.</div>
+      </section>
+      <section><h2>Defect(s) Identified</h2><div class="wrap"><table class="in" id="defects"></table></div></section>
+      <section><h2>Remedial Action Taken (numbers correspond to defects above)</h2><div class="wrap"><table class="in" id="remedial"></table></div></section>
     </div>
-  </section>
-  <section>
-    <h2>Details of Customer / Landlord (or agent where appropriate)</h2>
-    <div class="fields two">
-      <div class="fld"><label>Name (Mr/Mrs/Miss/Ms)</label><input data-k="cust_name"></div>
-      <div class="fld"><label>Address</label><input data-k="cust_addr"></div>
-      <div class="fld"><label>Postcode</label><input data-k="cust_pc"></div>
-      <div class="fld"><label>Contact No</label><input data-k="cust_tel" type="tel"></div>
+  </div>
+
+  <div class="cols">
+    <div>
+      <section>
+        <h2>Outcome checks (select as appropriate)</h2>
+        <div class="outcome-row"><span>Outcome of gas installation pipework visual inspection?</span>
+          <select data-k="oc1"><option></option><option>Pass</option><option>Fail</option><option>NA</option></select></div>
+        <div class="outcome-row"><span>Outcome of gas supply pipework visual inspection?</span>
+          <select data-k="oc2"><option></option><option>Pass</option><option>Fail</option><option>NA</option></select></div>
+        <div class="outcome-row"><span>Is the Emergency Control Valve access satisfactory?</span>
+          <select data-k="oc3"><option></option><option>Pass</option><option>Fail</option></select></div>
+        <div class="outcome-row"><span>Outcome of gas tightness test?</span>
+          <select data-k="oc4"><option></option><option>Pass</option><option>Fail</option><option>NA</option></select></div>
+        <div class="outcome-row"><span>Is the Protective Equipotential Bonding satisfactory?</span>
+          <select data-k="oc5"><option></option><option>Pass</option><option>Fail</option></select></div>
+      </section>
     </div>
-  </section>
-  <section>
-    <h2>Number of Appliances tested</h2>
-    <div class="fields"><div class="fld"><input data-k="n_appl" type="number" min="0" max="5" style="max-width:160px"></div></div>
-  </section>
-  <section><h2>Appliance Details</h2><div class="wrap"><table class="in" id="appl"></table></div></section>
-  <section>
-    <h2>Inspection Details</h2>
-    <div class="wrap"><table class="in" id="insp"></table></div>
-    <div class="note">Record each appliance on the same row number as the Appliance Details table.</div>
-  </section>
-  <section><h2>Defect(s) Identified</h2><div class="wrap"><table class="in" id="defects"></table></div></section>
-  <section><h2>Remedial Action Taken (numbers correspond to defects above)</h2><div class="wrap"><table class="in" id="remedial"></table></div></section>
-  <section>
-    <h2>Outcome checks (select as appropriate)</h2>
-    <div class="outcome-row"><span>Outcome of gas installation pipework visual inspection?</span>
-      <select data-k="oc1"><option></option><option>Pass</option><option>Fail</option><option>NA</option></select></div>
-    <div class="outcome-row"><span>Outcome of gas supply pipework visual inspection?</span>
-      <select data-k="oc2"><option></option><option>Pass</option><option>Fail</option><option>NA</option></select></div>
-    <div class="outcome-row"><span>Is the Emergency Control Valve access satisfactory?</span>
-      <select data-k="oc3"><option></option><option>Pass</option><option>Fail</option></select></div>
-    <div class="outcome-row"><span>Outcome of gas tightness test?</span>
-      <select data-k="oc4"><option></option><option>Pass</option><option>Fail</option><option>NA</option></select></div>
-    <div class="outcome-row"><span>Is the Protective Equipotential Bonding satisfactory?</span>
-      <select data-k="oc5"><option></option><option>Pass</option><option>Fail</option></select></div>
-  </section>
-  <section>
-    <h2>Signatures and dates</h2>
-    <div class="fields two">
-      <div class="fld"><label>Record issued by (engineer's name)</label><input data-k="sig_issued_by"></div>
-      <div class="fld"><label>Print name</label><input data-k="sig_print"></div>
-      <div class="fld"><label>Received by (tenant / landlord / homeowner / agent)</label><input data-k="sig_received_by"></div>
-      <div class="fld"><label>Date appliance(s)/flue(s) checked</label><input data-k="date_checked" type="date"></div>
-      <div class="fld"><label>Next safety check due by</label><input data-k="next_due" type="date"></div>
+    <div>
+      <section>
+        <h2>Signatures and dates</h2>
+        <div class="fields two">
+          <div class="fld"><label>Record issued by (engineer's name)</label><input data-k="sig_issued_by"></div>
+          <div class="fld"><label>Print name</label><input data-k="sig_print"></div>
+          <div class="fld"><label>Received by (tenant / landlord / homeowner / agent)</label><input data-k="sig_received_by"></div>
+          <div class="fld"><label>Date appliance(s)/flue(s) checked</label><input data-k="date_checked" type="date"></div>
+          <div class="fld"><label>Next safety check due by</label><input data-k="next_due" type="date"></div>
+        </div>
+        <div class="sigbox">
+          <div class="lbl">Engineer signature <button id="clrEng">Clear</button></div>
+          <canvas class="pad" id="padEng"></canvas>
+        </div>
+        <div class="sigbox">
+          <div class="lbl">Customer signature <button id="clrCust">Clear</button></div>
+          <canvas class="pad" id="padCust"></canvas>
+        </div>
+      </section>
     </div>
-  </section>
   </div>
 </main>
 
+<!-- Certificate -->
 <main id="certView" hidden>
+  <div class="toolbar noprint">
+    <button id="certBack">Back to jobs</button>
+    <button class="primary" id="certPdf">Save / share PDF</button>
+    <button id="certPrint">Print</button>
+    <button id="certIcs">Add next-check reminder</button>
+  </div>
   <div class="certwrap"><div class="cert" id="cert"></div></div>
 </main>
 
+<!-- Appliance library -->
+<main id="applView" hidden>
+  <p class="muted">Saved makes and models. They appear as suggestions when you fill in a CP12.</p>
+  <div class="appl-form noprint">
+    <input id="aType" placeholder="Type (e.g. Boiler)">
+    <input id="aMfr" placeholder="Manufacturer">
+    <input id="aModel" placeholder="Model">
+    <button class="primary" id="applAdd">Add</button>
+  </div>
+  <div class="lib" id="applList"></div>
+</main>
+
+<!-- Settings -->
+<main id="settingsView" hidden>
+  <div class="setgrid">
+    <div class="panel">
+      <h3>My business details</h3>
+      <p class="muted">Filled in automatically on new CP12s.</p>
+      <div class="fld"><label>Business name</label><input data-p="biz_name"></div>
+      <div class="fld"><label>Gas Safe Register No</label><input data-p="biz_gsr_no"></div>
+      <div class="fld"><label>Registered Engineer's Name</label><input data-p="eng_name"></div>
+      <div class="fld"><label>Gas Safe Register Licence Number</label><input data-p="eng_licence"></div>
+      <div class="fld"><label>Business address</label><input data-p="biz_addr"></div>
+      <div class="fld"><label>Postcode</label><input data-p="biz_pc"></div>
+      <div class="fld"><label>Contact No</label><input data-p="biz_tel" type="tel"></div>
+      <div class="btnrow"><button class="primary" id="profSave">Save business details</button></div>
+    </div>
+    <div class="panel">
+      <h3>Backup and restore</h3>
+      <p class="muted">Your records are saved on this phone only. Make a backup after each job.</p>
+      <div class="btnrow">
+        <button id="copyBackup">Copy backup</button>
+        <button id="exportFile">Save backup file</button>
+        <button id="importFileBtn">Load backup file</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+      <div class="fld"><label>Or paste backup text here and tap Restore</label>
+        <textarea id="pasteBackup"></textarea></div>
+      <div class="btnrow"><button id="restoreText">Restore from pasted text</button></div>
+      <div class="btnrow"><button class="danger" id="clearAll">Delete all records on this phone</button></div>
+    </div>
+  </div>
+</main>
+
+<datalist id="dl-sites"></datalist>
+<datalist id="dl-custs"></datalist>
+<datalist id="dl-type"></datalist>
+<datalist id="dl-mfr"></datalist>
+<datalist id="dl-model"></datalist>
+
 <script>
-const KEY = "cp12-record-v2";
-const APPL_COLS = [["loc","Location of","text"],["type","Type","text"],["mfr","Manufacturer","text"],["model","Model","text"],["owned","Owned by Landlord (Yes/No)","yn"],["insp","Inspected (Yes/No)","yn"],["chim","Type of chimney/flue","text"]];
+const KEY = "cp12-db-v3";
+const OLD_KEY = "cp12-record-v2";
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe = s => String(s ?? "").replace(/[^A-Za-z0-9-]/g, "_");
+
+let db = load();
+let draftId = null, draftSigs = {}, certId = null, draftTimer = null;
+const pads = {};
+
+// ---------- storage ----------
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (d && Array.isArray(d.jobs)) return Object.assign({ jobs: [], appl: [], profile: {} }, d);
+  } catch (e) {}
+  return { jobs: [], appl: [], profile: {} };
+}
+function persist() {
+  try { localStorage.setItem(KEY, JSON.stringify(db)); return true; } catch (e) { return false; }
+}
+function migrate() {
+  if (db.migrated) return;
+  try {
+    const old = JSON.parse(localStorage.getItem(OLD_KEY) || "null");
+    if (old && Object.values(old).some(v => v)) {
+      db.jobs.push({ id: "old1", created: Date.now(), updated: Date.now(), data: old, sigs: {} });
+    }
+  } catch (e) {}
+  db.migrated = true;
+  persist();
+}
+function toast(m) { $("#status").textContent = m; }
+function twoTap(btn, action) {
+  if (btn.dataset.armed) { delete btn.dataset.armed; action(); return; }
+  const old = btn.textContent;
+  btn.dataset.armed = "1";
+  btn.textContent = "Tap again to confirm";
+  setTimeout(() => { if (btn.dataset.armed) { delete btn.dataset.armed; btn.textContent = old; } }, 3000);
+}
+
+// ---------- dates ----------
+function todayUTC() { const n = new Date(); return Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()); }
+function daysLeft(job) {
+  const d = job.data.next_due;
+  if (!d) return null;
+  return Math.round((Date.parse(d) - todayUTC()) / 864e5);
+}
+
+// ---------- views ----------
+function showView(name) {
+  ["jobs", "edit", "cert", "appl", "settings"].forEach(v => { $("#" + v + "View").hidden = v !== name; });
+  $$(".nav button").forEach(b => {
+    const on = b.dataset.go === name || (name === "edit" && b.dataset.go === "edit-new") || (name === "cert" && b.dataset.go === "jobs");
+    b.classList.toggle("on", on);
+  });
+  window.scrollTo(0, 0);
+  if (name === "jobs") renderJobs();
+  if (name === "appl") renderAppl();
+  if (name === "settings") loadSettings();
+  if (name === "edit") requestAnimationFrame(() => Object.values(pads).forEach(p => p.size()));
+}
+
+// ---------- tables ----------
+const APPL_COLS = [["loc","Location of","text"],["type","Type","text","dl-type"],["mfr","Manufacturer","text","dl-mfr"],["model","Model","text","dl-model"],["owned","Owned by Landlord (Yes/No)","yn"],["insp","Inspected (Yes/No)","yn"],["chim","Type of chimney/flue","text"]];
 const INSP_COLS = [["press","Operating pressure (mbar) or heat input (kW/h or Btu/h)","text"],["safety","Operation of safety device(s)","pfna"],["vent","Ventilation satisfactory","yn"],["visual","Visual condition of chimney flue and termination","pf"],["flueop","Chimney/flue operation checks","pf"],["analyser","Combustion analyser reading (if applicable)","text"],["serviced","Appliance serviced","yn"],["co_fit","CO alarm fitted","yn"],["co_test","CO alarm tested","pfna"],["safe","SAFE TO USE","yn"]];
 const DEF_COLS = [["defect","Defect(s) identified","text"],["giusp","GIUSP classification (AR, ID)","text"],["warn","Warning/advisory record serial no.","text"]];
 const REM_COLS = [["remedy","Remedial action taken","text"]];
 
-function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-function optionsFor(type){
-  const opts = {yn:["","Yes","No"], pf:["","Pass","Fail"], pfna:["","Pass","Fail","NA"]}[type];
-  return opts ? opts.map(o=>`<option>${o}</option>`).join("") : null;
+function optionsFor(type) {
+  const o = { yn: ["", "Yes", "No"], pf: ["", "Pass", "Fail"], pfna: ["", "Pass", "Fail", "NA"] }[type];
+  return o ? o.map(x => `<option>${x}</option>`).join("") : null;
 }
-function cellHTML(prefix, row, col){
+function cellHTML(prefix, row, col) {
   const id = `${prefix}_${row}_${col[0]}`;
   const opts = optionsFor(col[2]);
-  return opts ? `<td><select data-k="${id}">${opts}</select></td>` : `<td><input data-k="${id}" type="text"></td>`;
+  if (opts) return `<td><select data-k="${id}">${opts}</select></td>`;
+  return `<td><input data-k="${id}" type="text"${col[3] ? ` list="${col[3]}"` : ""}></td>`;
 }
-function buildTable(tableId, prefix, cols, rows){
-  const t = document.getElementById(tableId);
-  let head = "<tr><th>No.</th>" + cols.map(c=>`<th>${c[1]}</th>`).join("") + "</tr>";
+function buildTable(tableId, prefix, cols, rows) {
+  let head = "<tr><th>No.</th>" + cols.map(c => `<th>${c[1]}</th>`).join("") + "</tr>";
   let body = "";
-  for(let r=1;r<=rows;r++) body += `<tr><td class="num">${r}</td>` + cols.map(c=>cellHTML(prefix,r,c)).join("") + "</tr>";
-  t.innerHTML = head + body;
+  for (let r = 1; r <= rows; r++) body += `<tr><td class="num">${r}</td>` + cols.map(c => cellHTML(prefix, r, c)).join("") + "</tr>";
+  document.getElementById(tableId).innerHTML = head + body;
 }
-buildTable("appl","appl",APPL_COLS,5);
-buildTable("insp","insp",INSP_COLS,5);
-buildTable("defects","def",DEF_COLS,5);
-buildTable("remedial","rem",REM_COLS,5);
+buildTable("appl", "appl", APPL_COLS, 5);
+buildTable("insp", "insp", INSP_COLS, 5);
+buildTable("defects", "def", DEF_COLS, 5);
+buildTable("remedial", "rem", REM_COLS, 5);
 
-// ----- save / restore -----
-function collect(){
-  const data = {};
-  document.querySelectorAll("[data-k]").forEach(el => data[el.dataset.k] = el.value);
-  data.serial = document.getElementById("serial").value;
-  return data;
+// ---------- signature pads ----------
+function setupPad(id, key) {
+  const c = document.getElementById(id);
+  const ctx = c.getContext("2d");
+  let drawing = false, last = null;
+  const pos = e => { const r = c.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  function size() {
+    const r = c.getBoundingClientRect();
+    if (!r.width) return;
+    const dpr = window.devicePixelRatio || 1;
+    c.width = Math.round(r.width * dpr);
+    c.height = Math.round(r.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineWidth = 2; ctx.lineCap = "round"; ctx.strokeStyle = "#111";
+    if (draftSigs[key]) {
+      const img = new Image();
+      img.onload = () => ctx.drawImage(img, 0, 0, r.width, r.height);
+      img.src = draftSigs[key];
+    }
+  }
+  c.addEventListener("pointerdown", e => { drawing = true; last = pos(e); c.setPointerCapture(e.pointerId); });
+  c.addEventListener("pointermove", e => {
+    if (!drawing) return;
+    const p = pos(e);
+    ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+    last = p;
+  });
+  const end = () => { if (drawing) { drawing = false; draftSigs[key] = c.toDataURL("image/png"); scheduleDraft(); } };
+  c.addEventListener("pointerup", end);
+  c.addEventListener("pointercancel", end);
+  pads[key] = {
+    size,
+    clear() {
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, c.width, c.height); ctx.restore();
+      draftSigs[key] = null; scheduleDraft();
+    }
+  };
 }
-function apply(data){
-  document.querySelectorAll("[data-k]").forEach(el => { if(data[el.dataset.k] !== undefined) el.value = data[el.dataset.k]; });
-  if(data.serial !== undefined) document.getElementById("serial").value = data.serial;
-}
-let saveTimer;
-function save(){
-  try{
-    localStorage.setItem(KEY, JSON.stringify(collect()));
-    document.getElementById("status").textContent = "Saved on this device " + new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
-  }catch(e){ document.getElementById("status").textContent = "Could not save on this device; use Copy backup."; }
-}
-document.addEventListener("input", ()=>{ clearTimeout(saveTimer); saveTimer = setTimeout(save, 400); });
-document.addEventListener("change", save);
-try{ const saved = localStorage.getItem(KEY); if(saved) apply(JSON.parse(saved)); }catch(e){}
+setupPad("padEng", "eng");
+setupPad("padCust", "cust");
+$("#clrEng").onclick = () => pads.eng.clear();
+$("#clrCust").onclick = () => pads.cust.clear();
 
-// ----- certificate -----
-function line(label, val){
+// ---------- form values ----------
+function gather() {
+  const d = {};
+  $$("#editView [data-k]").forEach(el => d[el.dataset.k] = el.value);
+  return d;
+}
+function setFormValues(data, prof) {
+  $$("#editView [data-k]").forEach(el => {
+    const k = el.dataset.k;
+    let v = data[k];
+    if (v === undefined && prof && prof[k] !== undefined) v = prof[k];
+    el.value = v ?? "";
+  });
+}
+function scheduleDraft() {
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(() => {
+    try { localStorage.setItem("cp12-draft", JSON.stringify({ id: draftId, data: gather(), sigs: draftSigs })); } catch (e) {}
+  }, 500);
+}
+document.addEventListener("input", e => { if (e.target.closest("#editView")) scheduleDraft(); });
+
+// Fill blank fields from an earlier job with the same name
+function autofill(prefix) {
+  const name = ($(`#editView [data-k="${prefix}_name"]`).value || "").trim().toLowerCase();
+  if (!name) return;
+  const match = [...db.jobs].reverse().find(j => String(j.data[`${prefix}_name`] || "").trim().toLowerCase() === name);
+  if (!match) return;
+  ["addr", "pc", "tel"].forEach(f => {
+    const el = $(`#editView [data-k="${prefix}_${f}"]`);
+    if (el && !el.value) el.value = match.data[`${prefix}_${f}`] || "";
+  });
+  scheduleDraft();
+}
+document.addEventListener("change", e => {
+  const k = e.target.dataset && e.target.dataset.k;
+  if (k === "site_name") autofill("site");
+  if (k === "cust_name") autofill("cust");
+});
+
+// ---------- datalists ----------
+function uniq(a) { return [...new Set(a.filter(Boolean))]; }
+function fillList(id, values) {
+  document.getElementById(id).innerHTML = uniq(values).sort().map(v => `<option value="${esc(v)}">`).join("");
+}
+function applValues(k) {
+  return [...db.appl.map(a => a[k]), ...db.jobs.flatMap(j => [1, 2, 3, 4, 5].map(r => j.data[`appl_${r}_${k}`]))];
+}
+function refreshLists() {
+  fillList("dl-sites", db.jobs.map(j => j.data.site_name));
+  fillList("dl-custs", db.jobs.map(j => j.data.cust_name));
+  fillList("dl-type", applValues("type"));
+  fillList("dl-mfr", applValues("mfr"));
+  fillList("dl-model", applValues("model"));
+}
+
+// ---------- open / save job ----------
+function openEdit(id) {
+  const job = id ? db.jobs.find(j => j.id === id) : null;
+  draftId = job ? job.id : null;
+  let data = job ? job.data : {};
+  draftSigs = job ? { ...(job.sigs || {}) } : {};
+  let prof = job ? null : (db.profile || {});
+  try {
+    const dr = JSON.parse(localStorage.getItem("cp12-draft") || "null");
+    if (dr && dr.id === draftId) {
+      data = dr.data || {};
+      draftSigs = dr.sigs || {};
+      toast("Restored your unsaved entries");
+    }
+  } catch (e) {}
+  refreshLists();
+  setFormValues(data, prof);
+  showView("edit");
+}
+
+function saveJob() {
+  const data = gather();
+  if (!data.serial) { toast("Enter the serial number first"); $("#serialIn").focus(); return null; }
+  const now = Date.now();
+  let job = draftId ? db.jobs.find(j => j.id === draftId) : null;
+  if (job) {
+    job.data = data; job.sigs = { ...draftSigs }; job.updated = now;
+  } else {
+    job = { id: now.toString(36) + Math.random().toString(36).slice(2, 6), created: now, updated: now, data, sigs: { ...draftSigs } };
+    db.jobs.push(job);
+    draftId = job.id;
+  }
+  for (let r = 1; r <= 5; r++) {
+    const a = { type: data[`appl_${r}_type`] || "", mfr: data[`appl_${r}_mfr`] || "", model: data[`appl_${r}_model`] || "" };
+    if ((a.mfr || a.model) && !db.appl.some(b => b.type === a.type && b.mfr === a.mfr && b.model === a.model)) db.appl.push(a);
+  }
+  if (!persist()) { toast("Could not save on this device. Use Copy backup in Settings."); return job; }
+  try { localStorage.removeItem("cp12-draft"); } catch (e) {}
+  toast("Saved " + data.serial);
+  return job;
+}
+
+// ---------- jobs list ----------
+function jobCard(j) {
+  const d = daysLeft(j);
+  const pill = d === null ? ["ok", "No due date"]
+    : d < 0 ? ["bad", `Overdue ${-d} days`]
+    : d <= 30 ? ["warn", `Due in ${d} days`]
+    : ["ok", `Due ${esc(j.data.next_due)}`];
+  return `<div class="card">
+    <div class="ctop">
+      <div>
+        <div class="cserial">${esc(j.data.serial || "No serial")}</div>
+        <div>${esc(j.data.site_name || "")} ${esc(j.data.site_addr || "")}</div>
+        <div class="muted">${esc(j.data.site_pc || "")} · checked ${esc(j.data.date_checked || "-")}</div>
+      </div>
+      <span class="pill ${pill[0]}">${pill[1]}</span>
+    </div>
+    <div class="cbtns">
+      <button data-open="${j.id}">Open</button>
+      <button data-cert="${j.id}">Certificate</button>
+      <button class="danger" data-del="${j.id}">Delete</button>
+    </div>
+  </div>`;
+}
+function renderJobs() {
+  const q = ($("#search").value || "").trim().toLowerCase();
+  const list = [...db.jobs].sort((a, b) => b.updated - a.updated);
+  const due = list.map(j => ({ j, days: daysLeft(j) })).filter(x => x.days !== null && x.days <= 30).sort((a, b) => a.days - b.days);
+  const banner = $("#due");
+  if (due.length) {
+    const overdue = due.filter(x => x.days < 0).length;
+    banner.hidden = false;
+    banner.innerHTML = `<strong>${overdue} overdue, ${due.length - overdue} due within 30 days</strong>` +
+      due.slice(0, 6).map(x => `<div class="drow">${esc(x.j.data.serial || "No serial")} · ${esc(x.j.data.site_name || "")} · ${x.days < 0 ? "overdue " + (-x.days) + " days" : "due in " + x.days + " days"}</div>`).join("");
+  } else banner.hidden = true;
+  const items = list.filter(j => !q || [j.data.serial, j.data.site_name, j.data.site_addr, j.data.site_pc, j.data.cust_name].some(v => String(v || "").toLowerCase().includes(q)));
+  $("#jobList").innerHTML = items.length ? items.map(jobCard).join("")
+    : `<p class="empty">${db.jobs.length ? "No jobs match your search." : "No jobs yet. Tap New CP12 to start your first record."}</p>`;
+}
+$("#search").addEventListener("input", renderJobs);
+
+// ---------- certificate ----------
+function line(label, val) {
   return `<div class="ln"><span class="lb">${esc(label)}</span><span class="uv">${esc(val)}</span></div>`;
 }
-function renderCert(){
-  const d = collect();
+function sigImg(job, key) { return job.sigs && job.sigs[key] ? `<img class="sig" src="${job.sigs[key]}" alt="">` : ""; }
+function certHTML(job) {
+  const d = job.data || {};
   const g = k => d[k] ?? "";
-  const applRows = [1,2,3,4,5].map(r => `<tr><td class="num">${r}</td>` +
-    APPL_COLS.map(c => `<td>${esc(g(`appl_${r}_${c[0]}`))}</td>`).join("") + "</tr>").join("");
-  const inspRows = [1,2,3,4,5].map(r => `<tr><td class="num">${r}</td>` +
-    INSP_COLS.map(c => `<td>${esc(g(`insp_${r}_${c[0]}`))}</td>`).join("") + "</tr>").join("");
-  const defRows = [1,2,3,4,5].map(r => `<tr><td class="num">${r}</td>` +
-    `<td style="text-align:left">${esc(g(`def_${r}_defect`))}</td>` +
-    `<td>${esc(g(`def_${r}_giusp`))}</td><td>${esc(g(`def_${r}_warn`))}</td></tr>`).join("");
-  const remRows = [1,2,3,4,5].map(r => `<tr><td class="num">${r}</td>` +
-    `<td style="text-align:left">${esc(g(`rem_${r}_remedy`))}</td></tr>`).join("");
+  const rows = (cols, prefix, first, cell) => [1, 2, 3, 4, 5].map(r => `<tr><td class="num">${r}</td>` +
+    cols.map(c => `<td${cell ? ' style="text-align:left"' : ""}>${esc(g(`${prefix}_${r}_${c[0]}`))}</td>`).join("") + "</tr>").join("");
+  const applRows = rows(APPL_COLS, "appl");
+  const inspRows = rows(INSP_COLS, "insp");
+  const defRows = [1, 2, 3, 4, 5].map(r => `<tr><td class="num">${r}</td>
+    <td style="text-align:left">${esc(g(`def_${r}_defect`))}</td><td>${esc(g(`def_${r}_giusp`))}</td><td>${esc(g(`def_${r}_warn`))}</td></tr>`).join("");
+  const remRows = [1, 2, 3, 4, 5].map(r => `<tr><td class="num">${r}</td><td style="text-align:left">${esc(g(`rem_${r}_remedy`))}</td></tr>`).join("");
   const oc = (k, label) => `<div class="r"><span>${label}</span><b>${esc(g(k))}</b></div>`;
-
-  document.getElementById("cert").innerHTML = `
+  return `
   <div class="c-head">
     <div class="c-serial"><div class="sm">Serial No</div><div class="sv">${esc(d.serial)}</div></div>
     <div class="c-title"><div class="t">GAS SAFETY RECORD</div>
@@ -257,25 +604,17 @@ function renderCert(){
   <div class="c-body">
     <div class="c-left">
       <div class="box"><div class="bt">Details of Registered Business</div><div class="bd">
-        ${line("Gas Safe Register No", g("biz_gsr_no"))}
-        ${line("Registered Engineer's Name", g("eng_name"))}
-        ${line("Gas Safe Register Licence Number", g("eng_licence"))}
-        ${line("Business", g("biz_name"))}
-        ${line("Address", g("biz_addr"))}
-        ${line("Postcode", g("biz_pc"))}
-        ${line("Contact No", g("biz_tel"))}
+        ${line("Gas Safe Register No", g("biz_gsr_no"))}${line("Registered Engineer's Name", g("eng_name"))}
+        ${line("Gas Safe Register Licence Number", g("eng_licence"))}${line("Business", g("biz_name"))}
+        ${line("Address", g("biz_addr"))}${line("Postcode", g("biz_pc"))}${line("Contact No", g("biz_tel"))}
       </div></div>
       <div class="box"><div class="bt">Details of Site</div><div class="bd">
-        ${line("Name (Mr/Mrs/Miss/Ms)", g("site_name"))}
-        ${line("Address", g("site_addr"))}
-        ${line("Postcode", g("site_pc"))}
-        ${line("Contact No", g("site_tel"))}
+        ${line("Name (Mr/Mrs/Miss/Ms)", g("site_name"))}${line("Address", g("site_addr"))}
+        ${line("Postcode", g("site_pc"))}${line("Contact No", g("site_tel"))}
       </div></div>
       <div class="box"><div class="bt">Details of Customer/Landlord</div><div class="bd">
-        ${line("Name (Mr/Mrs/Miss/Ms)", g("cust_name"))}
-        ${line("Address", g("cust_addr"))}
-        ${line("Postcode", g("cust_pc"))}
-        ${line("Contact No", g("cust_tel"))}
+        ${line("Name (Mr/Mrs/Miss/Ms)", g("cust_name"))}${line("Address", g("cust_addr"))}
+        ${line("Postcode", g("cust_pc"))}${line("Contact No", g("cust_tel"))}
       </div></div>
       <div class="box"><div class="bd">${line("Number of Appliances tested", g("n_appl"))}</div></div>
     </div>
@@ -285,7 +624,7 @@ function renderCert(){
           <tr><th>No.</th><th>Location of</th><th>Type</th><th>Manufacturer</th><th>Model</th><th>Owned by Landlord Yes/No</th><th>Inspected Yes/No</th><th>Type of chimney/flue</th></tr>
           ${applRows}</table></div>
       <div class="tb"><div class="tt">Inspection Details</div>
-        <table class="c"><colgroup><col style="width:18px"><col><col><col><col><col><col><col><col><col><col></colgroup>
+        <table class="c"><colgroup><col style="width:18px">${"<col>".repeat(10)}</colgroup>
           <tr><th>No.</th><th>Operating pressure (mbar) / heat input</th><th>Safety device(s) Pass/Fail/NA</th><th>Ventilation Yes/No</th><th>Visual condition flue Pass/Fail</th><th>Chimney/flue operation Pass/Fail</th><th>Combustion analyser reading</th><th>Serviced Yes/No</th><th>CO alarm fitted Yes/No</th><th>CO alarm tested Pass/Fail/NA</th><th>SAFE TO USE Yes/No</th></tr>
           ${inspRows}</table></div>
       <div class="tb"><div class="tt">Defect(s) Identified</div>
@@ -300,16 +639,16 @@ function renderCert(){
   </div>
   <div class="c-foot">
     <div class="outc">
-      ${oc("oc1","Outcome of gas installation pipework visual inspection?")}
-      ${oc("oc2","Outcome of gas supply pipework visual inspection?")}
-      ${oc("oc3","Is the Emergency Control Valve access satisfactory?")}
-      ${oc("oc4","Outcome of gas tightness test?")}
-      ${oc("oc5","Is the Protective Equipotential Bonding satisfactory?")}
+      ${oc("oc1", "Outcome of gas installation pipework visual inspection?")}
+      ${oc("oc2", "Outcome of gas supply pipework visual inspection?")}
+      ${oc("oc3", "Is the Emergency Control Valve access satisfactory?")}
+      ${oc("oc4", "Outcome of gas tightness test?")}
+      ${oc("oc5", "Is the Protective Equipotential Bonding satisfactory?")}
     </div>
     <div class="issued">
-      ${line("Record issued by: Signature", g("sig_issued_by"))}
-      ${line("Print Name", g("sig_print"))}
-      ${line("Received by: Signature (Tenant/Landlord/Homeowner/Agent)", g("sig_received_by"))}
+      <div class="ln"><span class="lb">Record issued by: Signature</span><span class="uv">${sigImg(job, "eng")}</span></div>
+      ${line("Print Name", g("sig_print") || g("sig_issued_by"))}
+      <div class="ln"><span class="lb">Received by: Signature</span><span class="uv">${sigImg(job, "cust")}</span></div>
       ${line("Date appliance(s)/flue(s) checked", g("date_checked"))}
     </div>
     <div class="attn">
@@ -319,67 +658,173 @@ function renderCert(){
     </div>
   </div>
   <div class="c-note">Top copy: Landlord/Homeowner/Managing Agent &nbsp; Green copy: Tenant &nbsp; Yellow copy: Registered Business</div>`;
-  fitCert();
 }
-function fitCert(){
-  const cert = document.getElementById("cert");
+function fitCert() {
+  const cert = $("#cert");
   const avail = document.querySelector(".certwrap").clientWidth - 24;
   cert.style.zoom = Math.min(1, avail / 1125);
 }
-window.addEventListener("resize", fitCert);
+function openCert(id) {
+  const job = db.jobs.find(j => j.id === id);
+  if (!job) return;
+  certId = id;
+  $("#cert").innerHTML = certHTML(job);
+  showView("cert");
+  fitCert();
+}
+function currentCertJob() { return db.jobs.find(j => j.id === certId); }
+window.addEventListener("resize", () => { if (!$("#certView").hidden) fitCert(); });
 
-function showTab(which){
-  const isCert = which === "cert";
-  document.getElementById("formView").hidden = isCert;
-  document.getElementById("certView").hidden = !isCert;
-  document.getElementById("tabForm").classList.toggle("on", !isCert);
-  document.getElementById("tabCert").classList.toggle("on", isCert);
-  if(isCert) renderCert();
-  window.scrollTo(0,0);
-}
-
-// ----- backup and clear -----
-function printCert(){
-  renderCert(); showTab("cert");
-  setTimeout(()=>window.print(), 150);
-}
-function exportJSON(){
-  const blob = new Blob([JSON.stringify(collect(), null, 2)], {type:"application/json"});
-  const a = document.createElement("a");
-  const serial = (document.getElementById("serial").value || "CP12").replace(/[^A-Za-z0-9-]/g,"_");
-  a.href = URL.createObjectURL(blob); a.download = `CP12_${serial}.json`;
-  document.body.appendChild(a); a.click(); a.remove();
-}
-function importJSON(){
-  const inp = document.createElement("input");
-  inp.type = "file"; inp.accept = "application/json,.json";
-  inp.onchange = async () => {
-    const file = inp.files[0]; if(!file) return;
-    try{ apply(JSON.parse(await file.text())); save(); }
-    catch(e){ alert("That file could not be read."); }
-  };
-  inp.click();
-}
-let clearArmed = false;
-function clearForm(btn){
-  if(!clearArmed){
-    clearArmed = true; btn.textContent = "Tap again to clear";
-    setTimeout(()=>{ clearArmed = false; btn.textContent = "Clear form"; }, 4000);
-    return;
+// ---------- sharing, PDF and reminders ----------
+async function shareOrDownload(file, name) {
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: name }); return; }
+    catch (e) { if (e.name === "AbortError") return; }
   }
-  clearArmed = false; btn.textContent = "Clear form";
-  document.querySelectorAll("[data-k]").forEach(el => el.value = "");
-  document.getElementById("serial").value = "";
-  save();
-  if(!document.getElementById("certView").hidden) renderCert();
+  const url = URL.createObjectURL(file);
+  const a = document.createElement("a");
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  toast("Saved " + name);
 }
+async function exportPDF(btn) {
+  const job = currentCertJob();
+  if (!job) return;
+  if (typeof html2canvas === "undefined" || !window.jspdf) { toast("PDF tools did not load. Check the internet connection."); return; }
+  const cert = $("#cert");
+  const oldZoom = cert.style.zoom;
+  btn.disabled = true; btn.textContent = "Making PDF…";
+  try {
+    cert.style.zoom = "1";
+    const canvas = await html2canvas(cert, { scale: 2, useCORS: true });
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+    const w = 287, h = Math.min(200, w * canvas.height / canvas.width);
+    pdf.addImage(canvas.toDataURL("image/jpeg", 0.92), "JPEG", 5, 5, w, h);
+    const name = `CP12_${safe(job.data.serial || job.id)}.pdf`;
+    await shareOrDownload(new File([pdf.output("blob")], name, { type: "application/pdf" }), name);
+  } catch (e) {
+    toast("Could not make the PDF. Try Print instead.");
+  } finally {
+    cert.style.zoom = oldZoom;
+    btn.disabled = false; btn.textContent = "Save / share PDF";
+  }
+}
+function stamp() { return new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+/, ""); }
+function reminderICS() {
+  const job = currentCertJob();
+  if (!job) return;
+  const d = (job.data.next_due || "").replace(/-/g, "");
+  if (!d) { toast("Add a next check date first"); return; }
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//CP12//EN", "BEGIN:VEVENT",
+    `UID:${job.id}@cp12`, `DTSTAMP:${stamp()}`, `DTSTART;VALUE=DATE:${d}`,
+    `SUMMARY:Gas safety check due - ${job.data.site_name || job.data.serial || "CP12"}`,
+    "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Gas safety check due", "TRIGGER:-P30D", "END:VALARM",
+    "END:VEVENT", "END:VCALENDAR"];
+  const name = `CP12_reminder_${safe(job.data.serial || job.id)}.ics`;
+  shareOrDownload(new File([lines.join("\r\n")], name, { type: "text/calendar" }), name);
+}
+
+// ---------- appliance library ----------
+function renderAppl() {
+  const list = $("#applList");
+  list.innerHTML = db.appl.length ? db.appl.map((a, i) =>
+    `<div class="it"><span>${esc(a.type)} ${esc(a.mfr)} ${esc(a.model)}</span><button class="danger" data-del-appl="${i}">Delete</button></div>`).join("")
+    : `<div class="it"><span class="muted">No appliances saved yet.</span></div>`;
+}
+function addAppl() {
+  const a = { type: $("#aType").value.trim(), mfr: $("#aMfr").value.trim(), model: $("#aModel").value.trim() };
+  if (!a.mfr && !a.model && !a.type) { toast("Enter a type, make or model"); return; }
+  db.appl.push(a); persist();
+  ["#aType", "#aMfr", "#aModel"].forEach(s => $(s).value = "");
+  renderAppl(); toast("Appliance saved");
+}
+
+// ---------- settings and backup ----------
+function loadSettings() {
+  $$("#settingsView [data-p]").forEach(el => el.value = (db.profile || {})[el.dataset.p] || "");
+}
+function saveProfile() {
+  const p = {};
+  $$("#settingsView [data-p]").forEach(el => p[el.dataset.p] = el.value.trim());
+  db.profile = p; persist(); toast("Business details saved");
+}
+function backupText() { return JSON.stringify(db, null, 2); }
+async function copyBackup(btn) {
+  const text = backupText();
+  try { await navigator.clipboard.writeText(text); btn.textContent = "Copied"; }
+  catch (e) {
+    const ta = document.createElement("textarea");
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand("copy"); } catch (_) {}
+    ta.remove();
+    btn.textContent = ok ? "Copied" : "Copy failed";
+  }
+  setTimeout(() => btn.textContent = "Copy backup", 2000);
+}
+function importText(txt) {
+  try {
+    const obj = JSON.parse(txt);
+    if (!obj || !Array.isArray(obj.jobs)) throw new Error("bad");
+    const ids = new Set(db.jobs.map(j => j.id));
+    obj.jobs.forEach(j => { if (!ids.has(j.id)) db.jobs.push(j); });
+    (obj.appl || []).forEach(a => {
+      if (!db.appl.some(b => b.type === a.type && b.mfr === a.mfr && b.model === a.model)) db.appl.push(a);
+    });
+    if (obj.profile && !Object.keys(db.profile || {}).length) db.profile = obj.profile;
+    persist();
+    toast(`Restored ${obj.jobs.length} job(s)`);
+    renderJobs();
+  } catch (e) { toast("That backup could not be read."); }
+}
+function clearAll() {
+  db = { jobs: [], appl: [], profile: {}, migrated: true };
+  persist(); renderJobs(); toast("All records deleted on this phone");
+}
+
+// ---------- wiring ----------
+const ACTIONS = {
+  btnSave: () => { if (saveJob()) showView("jobs"); },
+  btnSaveView: () => { const j = saveJob(); if (j) openCert(j.id); },
+  btnDiscard: () => showView("jobs"),
+  certBack: () => showView("jobs"),
+  certPdf: t => exportPDF(t),
+  certPrint: () => window.print(),
+  certIcs: () => reminderICS(),
+  applAdd: () => addAppl(),
+  profSave: () => saveProfile(),
+  copyBackup: t => copyBackup(t),
+  exportFile: () => { const f = new File([backupText()], "CP12_backup.json", { type: "application/json" }); shareOrDownload(f, "CP12_backup.json"); },
+  importFileBtn: () => $("#importFile").click(),
+  restoreText: () => importText($("#pasteBackup").value),
+  clearAll: t => twoTap(t, clearAll),
+};
+document.addEventListener("click", e => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  if (t.dataset.go) { if (t.dataset.go === "edit-new") openEdit(null); else showView(t.dataset.go); return; }
+  if (t.dataset.open) return openEdit(t.dataset.open);
+  if (t.dataset.cert) return openCert(t.dataset.cert);
+  if (t.dataset.del) return twoTap(t, () => { db.jobs = db.jobs.filter(j => j.id !== t.dataset.del); persist(); renderJobs(); toast("Job deleted"); });
+  if (t.dataset.delAppl !== undefined) return twoTap(t, () => { db.appl.splice(+t.dataset.delAppl, 1); persist(); renderAppl(); });
+  if (t.id && ACTIONS[t.id]) return ACTIONS[t.id](t);
+});
+$("#importFile").addEventListener("change", e => {
+  const f = e.target.files[0];
+  if (f) f.text().then(importText).catch(() => toast("That backup could not be read."));
+  e.target.value = "";
+});
+
+// ---------- start ----------
+migrate();
+refreshLists();
+showView("jobs");
+if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 </script>
 
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
-}
-</script>
-
+<!-- PDF tools (loaded from cdnjs; needed only for Save / share PDF) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
