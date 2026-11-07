@@ -3,141 +3,216 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#3a3a3a">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="CP12">
+<meta name="theme-color" content="#0f766e">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>CP12 Gas Safety Record</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Gas Jobs">
+<title>Gas Jobs</title>
 <style>
-  :root { --dark:#3a3a3a; --yellow:#fff38a; --pale:#fffce8; --ink:#111; }
-  * { box-sizing:border-box; }
-  body { margin:0; font-family:Arial, Helvetica, sans-serif; color:var(--ink); background:#e9e9e9; font-size:15px; }
-  [hidden] { display:none !important; }
-  header { background:var(--dark); color:#fff; padding:10px 12px; position:sticky; top:0; z-index:5; }
-  header h1 { font-size:17px; margin:0 0 8px; letter-spacing:.4px; }
-  .nav { display:flex; gap:6px; flex-wrap:wrap; }
-  button { font:inherit; font-size:14px; padding:8px 10px; border:1px solid #333; background:#fff; border-radius:4px; cursor:pointer; }
-  .nav button { background:#555; color:#fff; border-color:#777; }
-  .nav button.on { background:#ffe500; color:#000; border-color:#000; font-weight:bold; }
-  button.primary { background:var(--dark); color:#fff; }
-  button.danger { color:#a00; }
-  button:disabled { opacity:.6; }
-  .status { font-size:12px; color:#333; padding:6px 12px; min-height:22px; }
-  main { padding:10px 12px 40px; max-width:1200px; margin:0 auto; }
-  .due-banner { background:#fff3b0; border:1px solid #c9a800; padding:10px; border-radius:6px; margin-bottom:10px; font-size:14px; }
-  .drow { margin-top:4px; font-size:13px; }
-  .search { width:100%; font-size:16px; padding:10px; border:1px solid #888; border-radius:6px; margin-bottom:10px; }
-  .card { background:#fff; border:1px solid #bbb; border-radius:8px; padding:10px; margin-bottom:8px; }
-  .ctop { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
-  .cserial { font-weight:bold; font-size:16px; }
-  .muted { color:#666; font-size:12px; }
-  .pill { font-size:12px; padding:4px 8px; border-radius:12px; white-space:nowrap; font-weight:bold; }
-  .pill.ok { background:#d9f5df; color:#0a5b1d; }
-  .pill.warn { background:#ffe9a8; color:#6b4f00; }
-  .pill.bad { background:#ffd0d0; color:#8a0000; }
-  .cbtns { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
-  .empty { color:#555; text-align:center; padding:30px 10px; }
-  .toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
-  .toolbar label { font-size:13px; }
-  .toolbar input { font-size:16px; padding:8px; width:180px; }
-  .cols { display:grid; grid-template-columns:1fr; gap:12px; }
-  @media (min-width:900px) { .cols { grid-template-columns:1fr 1fr; } }
-  section { background:var(--yellow); border:1px solid #444; margin-bottom:12px; }
-  section > h2 { margin:0; font-size:13px; padding:6px 8px; background:#ffe500; border-bottom:1px solid #444; }
-  .fields { display:grid; grid-template-columns:1fr; background:var(--pale); }
-  @media (min-width:600px) { .fields.two { grid-template-columns:1fr 1fr; } }
-  .fld { display:flex; flex-direction:column; padding:6px 8px; border-bottom:1px solid #ccc; }
-  .fld label { font-size:12px; margin-bottom:3px; }
-  input, select { font:inherit; font-size:15px; padding:6px; border:1px solid #999; border-radius:3px; background:#fff; max-width:100%; }
-  .fld input, .fld select { width:100%; }
-  .wrap { overflow-x:auto; background:var(--pale); }
-  table.in { border-collapse:collapse; width:100%; min-width:680px; background:var(--pale); }
-  table.in th, table.in td { border:1px solid #444; padding:3px; font-size:11px; text-align:center; vertical-align:middle; }
-  table.in th { background:#fff; }
-  table.in td.num { width:24px; font-weight:bold; background:#fff; }
-  table.in td input, table.in td select { width:100%; min-width:60px; font-size:14px; padding:6px 2px; text-align:center; }
-  .note { font-size:12px; padding:6px 8px; background:var(--pale); }
-  .outcome-row { display:grid; grid-template-columns:1fr 120px; gap:8px; align-items:center; padding:6px 8px; border-bottom:1px solid #ccc; background:var(--pale); }
-  .sigbox { background:var(--pale); padding:8px; border-top:1px solid #ccc; }
-  .sigbox .lbl { font-size:12px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center; }
-  canvas.pad { width:100%; height:110px; background:#fff; border:1px solid #888; border-radius:3px; display:block; touch-action:none; }
-  .appl-form { display:grid; grid-template-columns:1fr; gap:8px; background:var(--pale); padding:10px; border:1px solid #444; margin-bottom:12px; }
-  @media (min-width:700px) { .appl-form { grid-template-columns:1fr 1fr 1fr auto; } }
-  .lib { background:#fff; border:1px solid #bbb; border-radius:6px; }
-  .lib .it { padding:8px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; gap:8px; align-items:center; font-size:14px; }
-  .setgrid { display:grid; grid-template-columns:1fr; gap:12px; }
-  @media (min-width:800px) { .setgrid { grid-template-columns:1fr 1fr; } }
-  .panel { background:#fff; border:1px solid #bbb; border-radius:8px; padding:12px; }
-  .panel h3 { margin:0 0 8px; font-size:15px; }
-  .panel .row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
-  .panel .fld { padding:4px 0; border:0; }
-  .panel textarea { font-size:13px; width:100%; min-height:80px; }
-  .btnrow { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
-
-  /* ----- certificate ----- */
-  .certwrap { overflow-x:auto; padding:10px; background:#d6d6d6; }
-  .cert { width:1123px; height:794px; background:var(--yellow); border:1px solid #333; display:flex; flex-direction:column; font-family:Arial, Helvetica, sans-serif; color:#000; }
-  .c-head { background:var(--dark); color:#fff; height:64px; display:flex; align-items:center; padding:0 12px; gap:12px; flex:0 0 auto; }
-  .c-serial { background:#fff; color:#000; width:170px; height:44px; padding:4px 8px; }
-  .c-serial .sm { font-size:8px; }
-  .c-serial .sv { font-size:16px; font-weight:bold; letter-spacing:1px; margin-top:2px; min-height:18px; }
-  .c-title { flex:1; text-align:center; }
-  .c-title .t { font-size:26px; font-weight:bold; letter-spacing:.5px; }
-  .c-title .d { font-size:7.5px; line-height:1.3; margin-top:2px; }
-  .c-badge { width:84px; height:52px; position:relative; }
-  .c-badge .tri { position:absolute; right:0; top:0; width:0; height:0; border-top:52px solid #ffd200; border-left:52px solid transparent; }
-  .c-badge span { position:absolute; right:4px; bottom:2px; font-size:10px; font-weight:bold; text-align:right; line-height:1; }
-  .c-body { flex:1 1 auto; display:grid; grid-template-columns:27% 1fr; gap:8px; padding:8px; min-height:0; }
-  .c-left, .c-right { display:flex; flex-direction:column; gap:6px; min-height:0; }
-  .box { background:#fffdf0; border:1px solid #444; display:flex; flex-direction:column; }
-  .box .bt { background:var(--yellow); font-weight:bold; font-size:10px; padding:3px 6px; border-bottom:1px solid #444; }
-  .box .bd { padding:4px 6px; display:flex; flex-direction:column; gap:3px; }
-  .ln { display:flex; gap:5px; font-size:9.5px; align-items:flex-end; }
-  .ln .lb { white-space:nowrap; }
-  .ln .uv { flex:1; border-bottom:1px solid #777; min-height:12px; padding:0 3px; font-weight:bold; font-size:10px; }
-  .sig { height:26px; max-width:100%; }
-  .tb { background:#fffdf0; border:1px solid #444; }
-  .tb .tt { background:var(--yellow); font-weight:bold; font-size:10px; text-align:center; padding:2px; border-bottom:1px solid #444; }
-  table.c { border-collapse:collapse; width:100%; table-layout:fixed; font-size:8.5px; }
-  table.c th, table.c td { border:1px solid #444; padding:2px 3px; text-align:center; overflow:hidden; }
-  table.c th { font-weight:normal; background:#fff; font-size:7.5px; line-height:1.2; }
-  table.c td { height:14px; font-weight:bold; font-size:9px; }
-  table.c td.num { font-weight:normal; width:18px; }
-  .c-foot { flex:0 0 auto; display:grid; grid-template-columns:37% 1fr 15%; gap:8px; padding:0 8px 6px; }
-  .outc, .issued, .attn { background:#fffdf0; border:1px solid #444; padding:4px 6px; }
-  .outc .r { display:flex; justify-content:space-between; font-size:9px; padding:2px 0; border-bottom:1px solid #ddd; }
-  .outc .r b { font-size:10px; min-width:60px; text-align:right; }
-  .issued .ln { margin:3px 0; }
-  .attn { background:var(--dark); color:#fff; text-align:center; display:flex; flex-direction:column; justify-content:center; }
-  .attn .big { font-size:13px; font-weight:bold; }
-  .attn .due { background:#fff; color:#000; margin:6px 4px 0; padding:6px; font-weight:bold; font-size:11px; min-height:28px; }
-  .c-note { font-size:7px; text-align:right; padding:0 8px 4px; }
-
-  @page { size:A4 landscape; margin:8mm; }
-  @media print {
-    .noprint { display:none !important; }
-    body { background:#fff; }
-    .certwrap { padding:0; background:none; overflow:visible; }
-    .cert { zoom:1 !important; width:281mm; height:194mm; border:none; }
-    .cert, .cert * { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
-  }
+:root{
+  --bg:#f4f6f7;--card:#fff;--text:#14201f;--muted:#5d6b6a;--line:#dfe5e5;
+  --accent:#0f766e;--accent-ink:#fff;--accent-soft:#d9f0ed;
+  --red:#b42318;--red-soft:#fde8e6;--amber:#9a5b00;--amber-soft:#fdf0d5;--blue:#175cd3;--blue-soft:#e3edfd;--green:#177245;--green-soft:#dff3e6;
+  --radius:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0e1514;--card:#162120;--text:#e8f0ef;--muted:#92a3a1;--line:#263534;
+  --accent:#2dd4bf;--accent-ink:#04201d;--accent-soft:#12312d;
+  --red:#ff8a80;--red-soft:#3a1816;--amber:#f5b94e;--amber-soft:#35280d;--blue:#8ab4ff;--blue-soft:#14233f;--green:#6fdc9c;--green-soft:#0f2e1d}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:var(--accent);color:var(--accent-ink);padding:calc(12px + env(safe-area-inset-top)) 16px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header h1{margin:0;font-size:1.15rem;font-weight:700}
+header small{opacity:.85;display:block;font-size:.78rem;font-weight:400}
+main{max-width:640px;margin:0 auto;padding:14px 14px 24px}
+h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 4px 8px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.stat b{display:block;font-size:1.35rem}
+.stat span{color:var(--muted);font-size:.82rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.card.muted{opacity:.72}
+.row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.title{font-weight:650}
+.sub{color:var(--muted);font-size:.9rem}
+.chip{display:inline-block;font-size:.76rem;font-weight:650;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.chip.red{background:var(--red-soft);color:var(--red)}
+.chip.amber{background:var(--amber-soft);color:var(--amber)}
+.chip.blue{background:var(--blue-soft);color:var(--blue)}
+.chip.green{background:var(--green-soft);color:var(--green)}
+.chip.grey{background:var(--line);color:var(--muted)}
+.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+button,.btn{font:inherit;font-weight:600;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);padding:9px 14px;cursor:pointer;min-height:42px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.danger{color:var(--red)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.small{padding:6px 12px;min-height:34px;font-size:.9rem}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav button{flex:1;border:0;border-radius:0;background:none;padding:10px 4px 9px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.72rem;color:var(--muted);min-height:58px}
+nav button svg{width:22px;height:22px}
+nav button.on{color:var(--accent)}
+nav .badge{position:absolute;margin-left:16px;margin-top:-2px;background:var(--red);color:#fff;border-radius:99px;font-size:.65rem;padding:0 6px;min-width:17px;line-height:17px}
+.seg{display:flex;background:var(--line);border-radius:10px;padding:3px;margin:0 0 12px}
+.seg button{flex:1;border:0;background:none;min-height:34px;padding:4px;color:var(--muted)}
+.seg button.on{background:var(--card);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.empty{text-align:center;padding:36px 16px;color:var(--muted)}
+.empty .actions{justify-content:center}
+label{display:block;font-size:.85rem;font-weight:600;margin:12px 0 4px}
+input,select,textarea{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+textarea{min-height:110px;resize:vertical}
+input[type=checkbox]{width:auto;min-height:0}
+.check{display:flex;align-items:center;gap:8px;font-weight:600;margin-top:14px}
+.check input{width:20px;height:20px}
+.hint{font-size:.8rem;color:var(--muted);margin-top:4px}
+dialog{border:0;border-radius:18px;padding:18px;width:min(520px,94vw);max-height:92vh;background:var(--card);color:var(--text);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog h3{margin:0 0 4px}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#14201f;color:#fff;padding:10px 16px;border-radius:10px;font-size:.9rem;z-index:20;max-width:90vw}
+.note{background:var(--amber-soft);color:var(--amber);border-radius:10px;padding:10px 12px;font-size:.85rem;margin-bottom:12px}
+.fab{position:fixed;right:16px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:6;border-radius:99px;padding:12px 20px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+#cpRoot{ --dark:#3a3a3a; --yellow:#fff38a; --pale:#fffce8; --ink:#111; }
+#cpRoot *{ box-sizing:border-box; }
+#cpRoot{ margin:0; font-family:Arial, Helvetica, sans-serif; color:var(--ink); background:#e9e9e9; font-size:15px; }
+[hidden]{ display:none !important; }
+#cpRoot header{ background:var(--dark); color:#fff; padding:10px 12px; position:sticky; top:0; z-index:5; }
+#cpRoot header h1{ font-size:17px; margin:0 0 8px; letter-spacing:.4px; }
+#cpRoot .nav{ display:flex; gap:6px; flex-wrap:wrap; }
+#cpRoot button{ font:inherit; font-size:14px; padding:8px 10px; border:1px solid #333; background:#fff; border-radius:4px; cursor:pointer; }
+#cpRoot .nav button{ background:#555; color:#fff; border-color:#777; }
+#cpRoot .nav button.on{ background:#ffe500; color:#000; border-color:#000; font-weight:bold; }
+#cpRoot button.primary{ background:var(--dark); color:#fff; }
+#cpRoot button.danger{ color:#a00; }
+#cpRoot button:disabled{ opacity:.6; }
+#cpRoot .status{ font-size:12px; color:#333; padding:6px 12px; min-height:22px; }
+#cpRoot main{ padding:10px 12px 40px; max-width:1200px; margin:0 auto; }
+#cpRoot .due-banner{ background:#fff3b0; border:1px solid #c9a800; padding:10px; border-radius:6px; margin-bottom:10px; font-size:14px; }
+#cpRoot .drow{ margin-top:4px; font-size:13px; }
+#cpRoot .search{ width:100%; font-size:16px; padding:10px; border:1px solid #888; border-radius:6px; margin-bottom:10px; }
+#cpRoot .card{ background:#fff; border:1px solid #bbb; border-radius:8px; padding:10px; margin-bottom:8px; }
+#cpRoot .ctop{ display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
+#cpRoot .cserial{ font-weight:bold; font-size:16px; }
+#cpRoot .muted{ color:#666; font-size:12px; }
+#cpRoot .pill{ font-size:12px; padding:4px 8px; border-radius:12px; white-space:nowrap; font-weight:bold; }
+#cpRoot .pill.ok{ background:#d9f5df; color:#0a5b1d; }
+#cpRoot .pill.warn{ background:#ffe9a8; color:#6b4f00; }
+#cpRoot .pill.bad{ background:#ffd0d0; color:#8a0000; }
+#cpRoot .cbtns{ display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+#cpRoot .empty{ color:#555; text-align:center; padding:30px 10px; }
+#cpRoot .toolbar{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+#cpRoot .toolbar label{ font-size:13px; }
+#cpRoot .toolbar input{ font-size:16px; padding:8px; width:180px; }
+#cpRoot .cols{ display:grid; grid-template-columns:1fr; gap:12px; }
+@media (min-width:900px){#cpRoot .cols{ grid-template-columns:1fr 1fr; }}
+#cpRoot section{ background:var(--yellow); border:1px solid #444; margin-bottom:12px; }
+#cpRoot section > h2{ margin:0; font-size:13px; padding:6px 8px; background:#ffe500; border-bottom:1px solid #444; }
+#cpRoot .fields{ display:grid; grid-template-columns:1fr; background:var(--pale); }
+@media (min-width:600px){#cpRoot .fields.two{ grid-template-columns:1fr 1fr; }}
+#cpRoot .fld{ display:flex; flex-direction:column; padding:6px 8px; border-bottom:1px solid #ccc; }
+#cpRoot .fld label{ font-size:12px; margin-bottom:3px; }
+#cpRoot input, #cpRoot select{ font:inherit; font-size:15px; padding:6px; border:1px solid #999; border-radius:3px; background:#fff; max-width:100%; }
+#cpRoot .fld input, #cpRoot .fld select{ width:100%; }
+#cpRoot .wrap{ overflow-x:auto; background:var(--pale); }
+#cpRoot table.in{ border-collapse:collapse; width:100%; min-width:680px; background:var(--pale); }
+#cpRoot table.in th, #cpRoot table.in td{ border:1px solid #444; padding:3px; font-size:11px; text-align:center; vertical-align:middle; }
+#cpRoot table.in th{ background:#fff; }
+#cpRoot table.in td.num{ width:24px; font-weight:bold; background:#fff; }
+#cpRoot table.in td input, #cpRoot table.in td select{ width:100%; min-width:60px; font-size:14px; padding:6px 2px; text-align:center; }
+#cpRoot .note{ font-size:12px; padding:6px 8px; background:var(--pale); }
+#cpRoot .outcome-row{ display:grid; grid-template-columns:1fr 120px; gap:8px; align-items:center; padding:6px 8px; border-bottom:1px solid #ccc; background:var(--pale); }
+#cpRoot .sigbox{ background:var(--pale); padding:8px; border-top:1px solid #ccc; }
+#cpRoot .sigbox .lbl{ font-size:12px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center; }
+#cpRoot canvas.pad{ width:100%; height:110px; background:#fff; border:1px solid #888; border-radius:3px; display:block; touch-action:none; }
+#cpRoot .appl-form{ display:grid; grid-template-columns:1fr; gap:8px; background:var(--pale); padding:10px; border:1px solid #444; margin-bottom:12px; }
+@media (min-width:700px){#cpRoot .appl-form{ grid-template-columns:1fr 1fr 1fr auto; }}
+#cpRoot .lib{ background:#fff; border:1px solid #bbb; border-radius:6px; }
+#cpRoot .lib .it{ padding:8px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; gap:8px; align-items:center; font-size:14px; }
+#cpRoot .setgrid{ display:grid; grid-template-columns:1fr; gap:12px; }
+@media (min-width:800px){#cpRoot .setgrid{ grid-template-columns:1fr 1fr; }}
+#cpRoot .panel{ background:#fff; border:1px solid #bbb; border-radius:8px; padding:12px; }
+#cpRoot .panel h3{ margin:0 0 8px; font-size:15px; }
+#cpRoot .panel .row{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+#cpRoot .panel .fld{ padding:4px 0; border:0; }
+#cpRoot .panel textarea{ font-size:13px; width:100%; min-height:80px; }
+#cpRoot .btnrow{ display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
+#cpRoot .certwrap{ overflow-x:auto; padding:10px; background:#d6d6d6; }
+#cpRoot .cert{ width:1123px; height:794px; background:var(--yellow); border:1px solid #333; display:flex; flex-direction:column; font-family:Arial, Helvetica, sans-serif; color:#000; }
+#cpRoot .c-head{ background:var(--dark); color:#fff; height:64px; display:flex; align-items:center; padding:0 12px; gap:12px; flex:0 0 auto; }
+#cpRoot .c-serial{ background:#fff; color:#000; width:170px; height:44px; padding:4px 8px; }
+#cpRoot .c-serial .sm{ font-size:8px; }
+#cpRoot .c-serial .sv{ font-size:16px; font-weight:bold; letter-spacing:1px; margin-top:2px; min-height:18px; }
+#cpRoot .c-title{ flex:1; text-align:center; }
+#cpRoot .c-title .t{ font-size:26px; font-weight:bold; letter-spacing:.5px; }
+#cpRoot .c-title .d{ font-size:7.5px; line-height:1.3; margin-top:2px; }
+#cpRoot .c-badge{ width:84px; height:52px; position:relative; }
+#cpRoot .c-badge .tri{ position:absolute; right:0; top:0; width:0; height:0; border-top:52px solid #ffd200; border-left:52px solid transparent; }
+#cpRoot .c-badge span{ position:absolute; right:4px; bottom:2px; font-size:10px; font-weight:bold; text-align:right; line-height:1; }
+#cpRoot .c-body{ flex:1 1 auto; display:grid; grid-template-columns:27% 1fr; gap:8px; padding:8px; min-height:0; }
+#cpRoot .c-left, #cpRoot .c-right{ display:flex; flex-direction:column; gap:6px; min-height:0; }
+#cpRoot .box{ background:#fffdf0; border:1px solid #444; display:flex; flex-direction:column; }
+#cpRoot .box .bt{ background:var(--yellow); font-weight:bold; font-size:10px; padding:3px 6px; border-bottom:1px solid #444; }
+#cpRoot .box .bd{ padding:4px 6px; display:flex; flex-direction:column; gap:3px; }
+#cpRoot .ln{ display:flex; gap:5px; font-size:9.5px; align-items:flex-end; }
+#cpRoot .ln .lb{ white-space:nowrap; }
+#cpRoot .ln .uv{ flex:1; border-bottom:1px solid #777; min-height:12px; padding:0 3px; font-weight:bold; font-size:10px; }
+#cpRoot .sig{ height:26px; max-width:100%; }
+#cpRoot .tb{ background:#fffdf0; border:1px solid #444; }
+#cpRoot .tb .tt{ background:var(--yellow); font-weight:bold; font-size:10px; text-align:center; padding:2px; border-bottom:1px solid #444; }
+#cpRoot table.c{ border-collapse:collapse; width:100%; table-layout:fixed; font-size:8.5px; }
+#cpRoot table.c th, #cpRoot table.c td{ border:1px solid #444; padding:2px 3px; text-align:center; overflow:hidden; }
+#cpRoot table.c th{ font-weight:normal; background:#fff; font-size:7.5px; line-height:1.2; }
+#cpRoot table.c td{ height:14px; font-weight:bold; font-size:9px; }
+#cpRoot table.c td.num{ font-weight:normal; width:18px; }
+#cpRoot .c-foot{ flex:0 0 auto; display:grid; grid-template-columns:37% 1fr 15%; gap:8px; padding:0 8px 6px; }
+#cpRoot .outc, #cpRoot .issued, #cpRoot .attn{ background:#fffdf0; border:1px solid #444; padding:4px 6px; }
+#cpRoot .outc .r{ display:flex; justify-content:space-between; font-size:9px; padding:2px 0; border-bottom:1px solid #ddd; }
+#cpRoot .outc .r b{ font-size:10px; min-width:60px; text-align:right; }
+#cpRoot .issued .ln{ margin:3px 0; }
+#cpRoot .attn{ background:var(--dark); color:#fff; text-align:center; display:flex; flex-direction:column; justify-content:center; }
+#cpRoot .attn .big{ font-size:13px; font-weight:bold; }
+#cpRoot .attn .due{ background:#fff; color:#000; margin:6px 4px 0; padding:6px; font-weight:bold; font-size:11px; min-height:28px; }
+#cpRoot .c-note{ font-size:7px; text-align:right; padding:0 8px 4px; }
+@page{ size:A4 landscape; margin:8mm; }
+@media print{#cpRoot .noprint{ display:none !important; }
+#cpRoot{ background:#fff; }
+#cpRoot .certwrap{ padding:0; background:none; overflow:visible; }
+#cpRoot .cert{ zoom:1 !important; width:281mm; height:194mm; border:none; }
+#cpRoot .cert, #cpRoot .cert *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }}
+/* ----- CP12 section: keep it looking like the original inside the combined app ----- */
+#cpRoot{color:#111;line-height:1.25}
+#cpRoot h2,#cpRoot h3{text-transform:none;letter-spacing:normal;color:#111}
+#cpRoot label{display:inline;font-weight:400;margin:0}
+#cpRoot .fld label{display:block;margin-bottom:3px}
+#cpRoot input,#cpRoot select,#cpRoot textarea{min-height:0;width:auto;color:#111}
+#cpRoot textarea{background:#fff;border:1px solid #999;border-radius:3px;padding:6px}
+#cpRoot button{color:#111;min-height:0;font-weight:400}
+#cpRoot .note{color:#111;border-radius:0;margin:0}
+#cpRoot .row{justify-content:flex-start}
+#cpRoot .cpnav{background:#3a3a3a;padding:8px 12px}
+#cpRoot .cols > div{min-width:0}
+@media print{
+  body{padding:0!important;background:#fff!important}
+  body > *:not(#cpRoot){display:none!important}
+  #cpRoot main{padding:0!important;max-width:none!important}
+}
 </style>
 </head>
 <body>
-
-<header class="noprint">
-  <h1>CP12 Gas Safety Record</h1>
-  <nav class="nav">
-    <button data-go="jobs" class="on">Jobs</button>
+<header>
+  <h1 id="hdrTitle">Gas Jobs<small id="hdrSub"></small></h1>
+</header>
+<main id="view"></main>
+<div id="cpRoot" hidden>
+  <div class="nav noprint cpnav">
+    <button data-go="jobs" class="on">Records</button>
     <button data-go="edit-new">New CP12</button>
     <button data-go="appl">Appliances</button>
-    <button data-go="settings">Settings</button>
-  </nav>
-</header>
-<div class="status noprint" id="status"></div>
-
+    <button data-go="settings">Gas Safe details</button>
+  </div>
 <!-- Jobs -->
 <main id="jobsView">
   <div id="due" class="due-banner" hidden></div>
@@ -151,11 +226,16 @@
     <label>Serial No <input data-k="serial" id="serialIn" type="text"></label>
     <button class="primary" id="btnSave">Save</button>
     <button id="btnSaveView">Save and view certificate</button>
-    <button id="btnDiscard">Back to jobs</button>
+    <button id="btnDiscard">Back to records</button>
   </div>
 
   <div class="cols">
     <div>
+      <section>
+        <h2>Customer (links this certificate to your customer list and reminders)</h2>
+        <div class="fields"><div class="fld"><label>Pick from your customers</label>
+          <select data-k="customerId" id="cpCust"><option value="">None (type the details below)</option></select></div></div>
+      </section>
       <section>
         <h2>Details of Registered Business</h2>
         <div class="fields two">
@@ -246,7 +326,7 @@
 <!-- Certificate -->
 <main id="certView" hidden>
   <div class="toolbar noprint">
-    <button id="certBack">Back to jobs</button>
+    <button id="certBack">Back to records</button>
     <button class="primary" id="certPdf">Save / share PDF</button>
     <button id="certPrint">Print</button>
     <button id="certIcs">Add next-check reminder</button>
@@ -304,7 +384,570 @@
 <datalist id="dl-mfr"></datalist>
 <datalist id="dl-model"></datalist>
 
+</div>
+
+<nav id="nav"></nav>
+<dialog id="dlg"><div id="dlgBody"></div></dialog>
+<div id="toastHost"></div>
+
 <script>
+'use strict';
+const KEY = 'jobreminders.v1';
+const DEF = {
+  settings: {
+    business: 'Your Business Name',
+    payment: 'Pay by bank transfer: Sort code 00-00-00, Account 00000000.',
+    terms: 14, invoiceLead: 3, repeatDays: 7, certLead: 60,
+    gwMode: 'off', gwUrl: '', gwUser: '', gwPass: '', syncUrl: '', syncKey: '',
+    billOn: true, billDelay: 0,
+    billTpl: "Hi {name}, thanks for choosing {business} for {job}. Your bill is {amount}, due by {dueDate}. {payment} Thanks!{invoiceText}",
+    bizAddress: '', bizContact: '', nextInvoice: 1,
+    invoiceTpl: "Hi {name}, it's {business}. A friendly reminder that your payment of {amount} for {job} {dueText}. {payment} Thanks!",
+    certTpl: "Hi {name}, it's {business}. Your annual gas safety certificate {expiryText}. Please reply to book your annual check so you stay covered. Thanks!"
+  },
+  customers: [],
+  jobs: []
+};
+
+/* ---------- storage ---------- */
+let db = load();
+function load() {
+  try {
+    const r = JSON.parse(localStorage.getItem(KEY));
+    if (r && Array.isArray(r.customers) && Array.isArray(r.jobs))
+      return { customers: r.customers, jobs: r.jobs, settings: { ...DEF.settings, ...(r.settings || {}) } };
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(DEF));
+}
+function saveLocal() {
+  try { localStorage.setItem(KEY, JSON.stringify(db)); }
+  catch (e) { toast('Could not save – browser storage is blocked'); }
+}
+function save() { saveLocal(); schedulePush(); }
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
+const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const parse = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const today = () => iso(new Date());
+const days = (a, b) => Math.round((parse(b) - parse(a)) / 864e5);
+const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
+const addYear = s => { const d = parse(s); d.setFullYear(d.getFullYear() + 1); return iso(d); };
+const certExpiry = c => c.certDue || addYear(c.certDate);
+const fmtDate = s => parse(s).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+const money = n => '£' + Number(n || 0).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const plural = (n, w) => n + ' ' + w + (Math.abs(n) === 1 ? '' : 's');
+const cust = id => db.customers.find(c => c.id === id);
+const firstName = n => (n || '').trim().split(/\s+/)[0] || 'there';
+function phoneIntl(p) {
+  let n = (p || '').replace(/[^\d+]/g, '');
+  if (n.startsWith('00')) n = '+' + n.slice(2);
+  if (n.startsWith('0')) n = '+44' + n.slice(1);
+  return n;
+}
+function smsLink(num, body) {
+  const sep = /iPhone|iPad|iPod/.test(navigator.userAgent) ? '&' : '?';
+  return 'sms:' + num + sep + 'body=' + encodeURIComponent(body);
+}
+const fill = (tpl, vars) => tpl.replace(/\{(\w+)\}/g, (m, k) => (vars[k] ?? m));
+function ago(s) {
+  const d = days(s, today());
+  return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago';
+}
+let toastTimer;
+function toast(msg) {
+  const host = $('#toastHost');
+  host.innerHTML = '<div class="toast">' + esc(msg) + '</div>';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => host.innerHTML = '', 2600);
+}
+function modal(html) { $('#dlgBody').innerHTML = html; if (!$('#dlg').open) $('#dlg').showModal(); }
+function closeModal() { if ($('#dlg').open) $('#dlg').close(); }
+
+/* ---------- reminder logic ---------- */
+function buildReminders() {
+  const t = today(), s = db.settings, items = [];
+  db.jobs.filter(j => !j.paid).forEach(j => {
+    const c = cust(j.customerId); if (!c) return;
+    const d = days(t, j.due);
+    if (s.billOn && j.billSent === null && days(j.completed, t) >= s.billDelay) { items.push({ kind: 'bill', d, j, c, last: null }); return; }
+    if (d <= s.invoiceLead) items.push({ kind: 'invoice', d, j, c, last: j.lastReminded });
+  });
+  db.customers.forEach(c => {
+    if (!c.certDate) return;
+    const exp = certExpiry(c), d = days(t, exp);
+    if (d <= s.certLead) items.push({ kind: 'cert', d, c, exp, last: c.certReminded });
+  });
+  items.sort((a, b) => a.d - b.d);
+  const recent = i => i.last && days(i.last, t) < s.repeatDays;
+  return { need: items.filter(i => !recent(i)), done: items.filter(recent) };
+}
+function invoiceChip(d) {
+  if (d < 0) return `<span class="chip red">Overdue by ${plural(-d, 'day')}</span>`;
+  if (d === 0) return '<span class="chip amber">Due today</span>';
+  return `<span class="chip ${d <= 1 ? 'amber' : 'blue'}">Due in ${plural(d, 'day')}</span>`;
+}
+function certChip(d) {
+  if (d < 0) return `<span class="chip red">Expired ${plural(-d, 'day')} ago</span>`;
+  if (d === 0) return '<span class="chip red">Expires today</span>';
+  return `<span class="chip ${d <= 14 ? 'amber' : 'blue'}">Expires in ${plural(d, 'day')}</span>`;
+}
+
+/* ---------- views ---------- */
+let tab = 'today', jobFilter = 'unpaid';
+const ICONS = {
+  today: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
+  jobs: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>',
+  customers: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  cp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>',
+  settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>'
+};
+function render() {
+  const { need } = buildReminders();
+  const tabs = [['today', 'Reminders'], ['jobs', 'Jobs'], ['customers', 'Customers'], ['cp', 'CP12'], ['settings', 'Settings']];
+  $('#nav').innerHTML = tabs.map(([k, l]) =>
+    `<button class="${tab === k ? 'on' : ''}" onclick="go('${k}')">${ICONS[k]}${k === 'today' && need.length ? `<span class="badge">${need.length}</span>` : ''}<span>${l}</span></button>`).join('');
+  $('#hdrSub').textContent = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+  const isCp = tab === 'cp';
+  $('#view').hidden = isCp; $('#cpRoot').hidden = !isCp;
+  if (!isCp) $('#view').innerHTML = { today: viewToday, jobs: viewJobs, customers: viewCustomers, settings: viewSettings }[tab]();
+}
+function go(t) { tab = t; render(); if (t === 'cp') CP.enter(); else window.scrollTo(0, 0); }
+function newCpFor(id) { go('cp'); CP.newFor(id); }
+
+function reminderCard(i, muted) {
+  const hasPhone = !!phoneIntl(i.c.phone);
+  const last = i.last ? `Texted ${ago(i.last)}` : 'Not texted yet';
+  if (i.kind === 'invoice' || i.kind === 'bill') {
+    const isBill = i.kind === 'bill';
+    return `<div class="card ${muted ? 'muted' : ''}">
+      <div class="row"><div><div class="title">${esc(i.c.name)}</div><div class="sub">${money(i.j.amount)} · ${esc(i.j.desc)}</div></div>${isBill ? '<span class="chip blue">Send bill</span>' : invoiceChip(i.d)}</div>
+      <div class="sub" style="margin-top:6px">Invoice due ${fmtDate(i.j.due)} · ${isBill ? 'Bill not texted yet' : last}</div>
+      <div class="actions">
+        <button class="primary" ${hasPhone ? '' : 'disabled'} onclick="openMessage('${i.kind}','${i.j.id}')">${hasPhone ? (isBill ? 'Text bill' : 'Text reminder') : 'No phone number'}</button>
+        <button onclick="markPaid('${i.j.id}')">Mark paid</button>
+      </div></div>`;
+  }
+  return `<div class="card ${muted ? 'muted' : ''}">
+    <div class="row"><div><div class="title">${esc(i.c.name)}</div><div class="sub">Annual gas safety certificate${i.c.address ? ' · ' + esc(i.c.address) : ''}</div></div>${certChip(i.d)}</div>
+    <div class="sub" style="margin-top:6px">Expiry ${fmtDate(i.exp)} · ${last}</div>
+    <div class="actions">
+      <button class="primary" ${hasPhone ? '' : 'disabled'} onclick="openMessage('cert','${i.c.id}')">${hasPhone ? 'Text reminder' : 'No phone number'}</button>
+      <button onclick="newCpFor('${i.c.id}')">New CP12</button>
+      <button onclick="renewForm('${i.c.id}')">Renewed</button>
+    </div></div>`;
+}
+function viewToday() {
+  const { need, done } = buildReminders();
+  const unpaid = db.jobs.filter(j => !j.paid);
+  const owed = unpaid.reduce((a, j) => a + Number(j.amount || 0), 0);
+  const overdue = unpaid.filter(j => days(today(), j.due) < 0).length;
+  let h = `<div class="stats">
+    <div class="stat"><b>${money(owed)}</b><span>Unpaid across ${plural(unpaid.length, 'job')}${overdue ? ` · ${overdue} overdue` : ''}</span></div>
+    <div class="stat"><b>${need.length}</b><span>${need.length === 1 ? 'text' : 'texts'} to send today</span></div></div>`;
+  if (!db.customers.length) {
+    return h + `<div class="empty"><p><b>Welcome!</b><br>Add a customer and a completed job, and this screen will tell you who to text and when.</p>
+      <div class="actions"><button class="primary" onclick="customerForm()">Add a customer</button><button onclick="loadDemo()">Load demo data</button></div></div>`;
+  }
+  h += '<h2>Needs a text</h2>';
+  if (gwOn() && need.length) h += `<button class="primary" style="width:100%;margin-bottom:10px" onclick="sendAll()">Send all ${need.length} now</button>`;
+  h += need.length ? need.map(i => reminderCard(i)).join('') : '<div class="empty">All caught up. Nothing needs a reminder right now. 🎉</div>';
+  if (done.length) h += '<h2>Recently texted</h2>' + done.map(i => reminderCard(i, true)).join('');
+  return h;
+}
+function viewJobs() {
+  let list = db.jobs.slice();
+  if (jobFilter === 'unpaid') list = list.filter(j => !j.paid).sort((a, b) => a.due.localeCompare(b.due));
+  else if (jobFilter === 'paid') list = list.filter(j => j.paid).sort((a, b) => (b.paidDate || '').localeCompare(a.paidDate || ''));
+  else list.sort((a, b) => b.completed.localeCompare(a.completed));
+  let h = `<div class="seg">${['unpaid', 'paid', 'all'].map(f => `<button class="${jobFilter === f ? 'on' : ''}" onclick="jobFilter='${f}';render()">${f[0].toUpperCase() + f.slice(1)}</button>`).join('')}</div>`;
+  if (!list.length) h += `<div class="empty">No ${jobFilter === 'all' ? '' : jobFilter + ' '}jobs yet.</div>`;
+  h += list.map(j => {
+    const c = cust(j.customerId);
+    const chip = j.paid ? '<span class="chip green">Paid</span>' : invoiceChip(days(today(), j.due));
+    return `<div class="card" onclick="jobForm('${j.id}')" style="cursor:pointer">
+      <div class="row"><div><div class="title">${esc(c ? c.name : 'Unknown customer')}</div><div class="sub">${esc(j.desc)}</div></div>${chip}</div>
+      <div class="sub" style="margin-top:6px">${money(j.amount)} · completed ${fmtDate(j.completed)}${j.paid ? '' : ' · due ' + fmtDate(j.due)}</div></div>`;
+  }).join('');
+  return h + `<button class="primary fab" onclick="jobForm()">+ Add job</button>`;
+}
+function viewCustomers() {
+  let h = '';
+  if (!db.customers.length) h += '<div class="empty">No customers yet.</div>';
+  h += db.customers.slice().sort((a, b) => a.name.localeCompare(b.name)).map(c => {
+    let chip = '<span class="chip grey">No certificate</span>';
+    if (c.certDate) { const exp = certExpiry(c); chip = certChip(days(today(), exp)); }
+    return `<div class="card" onclick="customerForm('${c.id}')" style="cursor:pointer">
+      <div class="row"><div><div class="title">${esc(c.name)}</div><div class="sub">${esc(c.phone || 'No phone number')}${c.address ? ' · ' + esc(c.address) : ''}</div></div>${chip}</div></div>`;
+  }).join('');
+  return h + `<button class="primary fab" onclick="customerForm()">+ Add customer</button>`;
+}
+function viewSettings() {
+  const s = db.settings;
+  const num = (k, label, hint) => `<label>${label}</label><input type="number" min="0" inputmode="numeric" value="${s[k]}" oninput="setSet('${k}',this.value,true)"><div class="hint">${hint}</div>`;
+  return `
+  <div class="card"><div class="title">Your business</div>
+    <label>Business name (used in texts and invoices)</label><input value="${esc(s.business)}" oninput="setSet('business',this.value)">
+    <label>Address (shown on invoices)</label><textarea style="min-height:70px" oninput="setSet('bizAddress',this.value)">${esc(s.bizAddress)}</textarea>
+    <label>Phone / email (shown on invoices)</label><input value="${esc(s.bizContact)}" oninput="setSet('bizContact',this.value)">
+    <label>Payment details (added to invoice texts)</label><textarea oninput="setSet('payment',this.value)">${esc(s.payment)}</textarea></div>
+  <div class="card"><div class="title">Bill text after a job</div>
+    <label>Text the bill when a job is added</label><select onchange="setSet('billOn',this.value==='1');render()">
+      <option value="1" ${s.billOn ? 'selected' : ''}>Yes, send the bill automatically</option>
+      <option value="0" ${!s.billOn ? 'selected' : ''}>No</option></select>
+    ${num('billDelay', 'Wait this many days after the job is completed', '0 sends the next time it runs (the next morning, or when you tap Send). Jobs added before this update are not billed again.')}
+    <label>Bill message</label><textarea oninput="setSet('billTpl',this.value)">${esc(s.billTpl)}</textarea>
+    <div class="hint">Fields: {name} {business} {amount} {job} {dueDate} {payment} {address}</div></div>
+  <div class="card"><div class="title">Timing</div>
+    ${num('terms', 'Payment terms (days)', 'New jobs get a due date this many days after completion.')}
+    ${num('invoiceLead', 'Start reminding before due date (days)', 'Set to 0 to only remind on or after the due date.')}
+    ${num('certLead', 'Gas certificate reminder starts (days before expiry)', 'In the UK a landlord gas safety check can be done up to 2 months (about 60 days) early without losing the original expiry date.')}
+    ${num('repeatDays', 'Don’t re-remind within (days)', 'After you text someone, they move to “Recently texted” for this long.')}</div>
+  <div class="card"><div class="title">Message templates</div>
+    <label>Invoice reminder</label><textarea oninput="setSet('invoiceTpl',this.value)">${esc(s.invoiceTpl)}</textarea>
+    <div class="hint">Fields: {name} {business} {amount} {job} {dueText} {payment} {address}</div>
+    <label>Gas certificate reminder</label><textarea oninput="setSet('certTpl',this.value)">${esc(s.certTpl)}</textarea>
+    <div class="hint">Fields: {name} {business} {expiryText} {address}</div>
+    <div class="actions"><button onclick="resetTemplates()">Reset templates</button></div></div>
+  <div class="card"><div class="title">Automatic sending (Android)</div>
+    <div class="sub">Sends texts from your own phone and SIM using the free SMS Gateway for Android app (sms-gate.app). Texts count against your normal mobile plan.</div>
+    <label>Mode</label><select onchange="setSet('gwMode',this.value);render()">
+      <option value="off" ${s.gwMode === 'off' ? 'selected' : ''}>Off (open Messages and tap send)</option>
+      <option value="cloud" ${s.gwMode === 'cloud' ? 'selected' : ''}>Cloud (works anywhere with internet)</option>
+      <option value="local" ${s.gwMode === 'local' ? 'selected' : ''}>Local server (same Wi-Fi or same phone)</option></select>
+    ${s.gwMode === 'local' ? `<label>Phone address</label><input value="${esc(s.gwUrl)}" placeholder="192.168.1.50:8080" oninput="setSet('gwUrl',this.value)"><div class="hint">Shown in the gateway app after you turn on Local server. If this app is open on the same phone, try localhost:8080.</div>` : ''}
+    ${s.gwMode !== 'off' ? `<label>Username</label><input value="${esc(s.gwUser)}" autocapitalize="off" autocomplete="off" oninput="setSet('gwUser',this.value)">
+    <label>Password</label><input type="password" value="${esc(s.gwPass)}" autocomplete="off" oninput="setSet('gwPass',this.value)">
+    <label>Send a test text to</label><input id="gwTestNum" type="tel" placeholder="Your own mobile number">
+    <div class="actions"><button onclick="gwTest()">Send test</button></div>` : ''}</div>
+  <div class="card"><div class="title">Hands-free (reminder server)</div>
+    <div class="sub">Connects to your free Cloudflare reminder server, which texts customers every morning even when this app is closed. See SETUP.md. It sends through the SMS Gateway app, so set the mode above to <b>Cloud</b>.</div>
+    ${syncOn() && s.gwMode !== 'cloud' ? '<div class="note" style="margin-top:10px">The server can only send through Cloud mode. Switch “Mode” above to Cloud.</div>' : ''}
+    <label>Server address</label><input value="${esc(s.syncUrl)}" placeholder="https://job-reminders.yourname.workers.dev" autocapitalize="off" autocomplete="off" onchange="setSync('syncUrl',this.value)">
+    <label>Sync key</label><input type="password" value="${esc(s.syncKey)}" autocomplete="off" onchange="setSync('syncKey',this.value)">
+    <div class="hint" id="syncInfo">${esc(syncInfo)}</div>
+    <div class="actions"><button onclick="pull()">Sync now</button><button onclick="runNow()">Run reminders now</button></div></div>
+  <div class="card"><div class="title">Your data</div>
+    <div class="sub">Everything is stored only on this device, in this browser. Back it up now and then.</div>
+    <div class="actions"><button onclick="exportData()">Export backup</button><button onclick="$('#imp').click()">Import backup</button><button onclick="loadDemo()">Load demo data</button><button class="danger" onclick="wipe()">Erase all</button></div>
+    <input id="imp" type="file" accept="application/json" style="display:none" onchange="importData(this)"></div>`;
+}
+function setSet(k, v, isNum) {
+  db.settings[k] = isNum ? Math.max(0, parseInt(v, 10) || 0) : v;
+  save();
+  const { need } = buildReminders();
+  const b = document.querySelector('nav .badge'); if (b) b.textContent = need.length;
+}
+function resetTemplates() { db.settings.billTpl = DEF.settings.billTpl; db.settings.invoiceTpl = DEF.settings.invoiceTpl; db.settings.certTpl = DEF.settings.certTpl; save(); render(); toast('Templates reset'); }
+
+/* ---------- messaging ---------- */
+let msgCtx = null;
+// asks your server for the PDF invoice link for a job ('' if the server isn't connected)
+async function invoiceLink(jobId) {
+  if (!syncOn()) return '';
+  if (pushTimer) { clearTimeout(pushTimer); await push(); }
+  try {
+    const r = await fetch(syncBase() + '/invoice', { method: 'POST', headers: { ...syncHdr(), 'Content-Type': 'application/json' }, body: JSON.stringify({ jobId }) });
+    return r.ok ? ((await r.json()).url || '') : '';
+  } catch (e) { return ''; }
+}
+async function previewInvoice(id) {
+  if (!syncOn()) return toast('Connect your reminder server first (Settings → Hands-free)');
+  toast('Opening invoice…');
+  const link = await invoiceLink(id);
+  if (!link) return toast('Couldn’t create the invoice. Check you are synced and have updated worker.js');
+  if (!window.open(link, '_blank')) location.href = link;
+}
+async function buildMessage(kind, id) {
+  const s = db.settings, t = today();
+  let c, vars, body;
+  if (kind === 'invoice' || kind === 'bill') {
+    const j = db.jobs.find(x => x.id === id); c = cust(j.customerId);
+    const d = days(t, j.due);
+    const link = await invoiceLink(j.id);
+    vars = { invoiceText: link ? ' View your invoice: ' + link : '', name: firstName(c.name), business: s.business, amount: money(j.amount), job: j.desc.charAt(0).toLowerCase() + j.desc.slice(1), address: c.address || '', payment: s.payment,
+      dueDate: fmtDate(j.due),
+      dueText: d < 0 ? 'was due on ' + fmtDate(j.due) : d === 0 ? 'is due today' : 'is due on ' + fmtDate(j.due) };
+    let tpl = kind === 'bill' ? s.billTpl : s.invoiceTpl;
+    if (link && !tpl.includes('{invoiceText}')) tpl += '{invoiceText}';
+    body = fill(tpl, vars);
+  } else {
+    c = cust(id); const exp = certExpiry(c), d = days(t, exp);
+    vars = { name: firstName(c.name), business: s.business, address: c.address || '',
+      expiryText: d < 0 ? 'expired on ' + fmtDate(exp) : d === 0 ? 'expires today' : 'expires on ' + fmtDate(exp) };
+    body = fill(s.certTpl, vars);
+  }
+  return { c, body, num: phoneIntl(c.phone) };
+}
+async function openMessage(kind, id) {
+  if (syncOn() && kind !== 'cert') toast('Preparing invoice…');
+  const { c, body } = await buildMessage(kind, id);
+  msgCtx = { kind, id, num: phoneIntl(c.phone) };
+  modal(`<h3>Text ${esc(c.name)}</h3><div class="sub">${esc(c.phone)}</div>
+    <label>Message (edit if you like)</label><textarea id="msgBody" style="min-height:150px">${esc(body)}</textarea>
+    <div class="actions">${gwOn() ? '<button class="primary" onclick="sendGw()">Send now</button><button onclick="sendSms()">Open in Messages</button>' : '<button class="primary" onclick="sendSms()">Open in Messages</button>'}<button onclick="copyMsg()">Copy</button><button onclick="closeModal()">Cancel</button></div>
+    <div class="hint">This opens your phone’s Messages app with the text ready. Press send there, and this reminder will be marked as texted.</div>`);
+}
+function markTexted() {
+  const t = today();
+  if (msgCtx.kind === 'cert') cust(msgCtx.id).certReminded = t;
+  else { const j = db.jobs.find(x => x.id === msgCtx.id); j.lastReminded = t; if (msgCtx.kind === 'bill') j.billSent = t; }
+  save();
+}
+function sendSms() {
+  const body = $('#msgBody').value;
+  markTexted(); closeModal(); render();
+  location.href = smsLink(msgCtx.num, body);
+}
+async function copyMsg() {
+  const el = $('#msgBody');
+  try { await navigator.clipboard.writeText(el.value); } catch (e) { el.select(); document.execCommand('copy'); }
+  toast('Message copied');
+}
+
+/* ---------- hands-free: sync with your reminder server (Cloudflare Worker) ---------- */
+const syncOn = () => !!(db.settings.syncUrl && db.settings.syncKey);
+let pushTimer = null, syncInfo = '';
+const syncBase = () => db.settings.syncUrl.trim().replace(/\/+$/, '');
+const syncHdr = () => ({ Authorization: 'Bearer ' + db.settings.syncKey.trim() });
+function setInfo(t) { syncInfo = t; const el = document.getElementById('syncInfo'); if (el) el.textContent = t; }
+function schedulePush() { if (!syncOn()) return; clearTimeout(pushTimer); pushTimer = setTimeout(push, 900); }
+async function push() {
+  pushTimer = null; if (!syncOn()) return;
+  const s = { ...db.settings }; delete s.syncUrl; delete s.syncKey; s.publicUrl = syncBase();
+  try {
+    const r = await fetch(syncBase() + '/data', { method: 'PUT', headers: { ...syncHdr(), 'Content-Type': 'application/json' }, body: JSON.stringify({ customers: db.customers, jobs: db.jobs, settings: s }) });
+    if (r.status === 401) throw new Error('wrong sync key');
+    if (!r.ok) throw new Error('server error ' + r.status);
+    setInfo('Synced just now');
+  } catch (e) { setInfo('Not synced: ' + (e.message || 'can’t reach the server')); }
+}
+async function pull() {
+  if (!syncOn() || pushTimer) return;
+  try {
+    const r = await fetch(syncBase() + '/data', { headers: syncHdr() });
+    if (r.status === 404) { await push(); return; }
+    if (r.status === 401) throw new Error('wrong sync key');
+    if (!r.ok) throw new Error('server error ' + r.status);
+    const d = await r.json();
+    if (!Array.isArray(d.customers) || !Array.isArray(d.jobs)) throw new Error('unexpected data');
+    const keep = { syncUrl: db.settings.syncUrl, syncKey: db.settings.syncKey };
+    db = { customers: d.customers, jobs: d.jobs, settings: { ...DEF.settings, ...(d.settings || {}), ...keep } };
+    saveLocal();
+    let last = '';
+    try {
+      const st = await (await fetch(syncBase() + '/status', { headers: syncHdr() })).json();
+      if (st.at) last = ' · last automatic run ' + new Date(st.at).toLocaleString('en-GB') + ': ' + st.sent + ' sent' + (st.errors && st.errors.length ? ' (problem: ' + st.errors[0] + ')' : '');
+    } catch (e) {}
+    setInfo('Synced' + last);
+    const a = document.activeElement;
+    if (!$('#dlg').open && !(a && a.matches && a.matches('input,textarea,select'))) render();
+  } catch (e) { setInfo('Not synced: ' + (e.message || 'can’t reach the server')); }
+}
+function setSync(k, v) { db.settings[k] = v.trim(); saveLocal(); pull(); }
+async function runNow() {
+  if (!syncOn()) return toast('Add your server address and key first');
+  if (pushTimer) { clearTimeout(pushTimer); await push(); }
+  try {
+    toast('Running…');
+    const r = await fetch(syncBase() + '/run', { method: 'POST', headers: syncHdr() });
+    if (!r.ok) throw new Error('server error ' + r.status);
+    const res = await r.json();
+    toast(res.errors && res.errors.length ? res.sent + ' sent. Problem: ' + res.errors[0] : res.sent + ' of ' + res.total + ' due texts sent');
+    pull();
+  } catch (e) { toast('Couldn’t run: ' + e.message); }
+}
+
+/* ---------- Android SMS gateway (sends from your own phone's SIM) ---------- */
+const gwOn = () => db.settings.gwMode !== 'off' && !!db.settings.gwUser && !!db.settings.gwPass;
+function gwEndpoint() {
+  const s = db.settings;
+  if (s.gwMode === 'cloud') return 'https://api.sms-gate.app/3rdparty/v1/messages';
+  let u = (s.gwUrl || '').trim().replace(/\/+$/, '');
+  if (!/^https?:\/\//.test(u)) u = 'http://' + u;
+  return u + '/3rdparty/v1/messages';
+}
+async function gwSend(num, text) {
+  const s = db.settings;
+  if (syncOn()) {
+    // send via your server (avoids the browser being blocked)
+    if (pushTimer) { clearTimeout(pushTimer); await push(); }
+    let r2;
+    try { r2 = await fetch(syncBase() + '/send', { method: 'POST', headers: { ...syncHdr(), 'Content-Type': 'application/json' }, body: JSON.stringify({ to: num, text }) }); }
+    catch (e) { throw new Error('Couldn’t reach your reminder server. Check the server address and your internet.'); }
+    if (r2.status === 401) throw new Error('Wrong sync key');
+    if (r2.status === 404) throw new Error('Server needs the updated worker.js (see Cloudflare step)');
+    if (!r2.ok) { let m = ''; try { m = (await r2.json()).error; } catch (e) {} throw new Error(m || 'Server error ' + r2.status); }
+    return;
+  }
+  let r;
+  try {
+    r = await fetch(gwEndpoint(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + btoa(unescape(encodeURIComponent(s.gwUser + ':' + s.gwPass))) },
+      body: JSON.stringify({ textMessage: { text }, phoneNumbers: [num] })
+    });
+  } catch (e) {
+    throw new Error('Couldn’t reach the gateway. Check the SMS Gateway app is running and the details are right. If it still fails, use “Open in Messages” instead.');
+  }
+  if (r.status === 401) throw new Error('Gateway says wrong username or password');
+  if (!r.ok) throw new Error('Gateway error ' + r.status);
+}
+async function sendGw() {
+  const body = $('#msgBody').value;
+  try { toast('Sending…'); await gwSend(msgCtx.num, body); markTexted(); closeModal(); render(); toast('Text sent'); }
+  catch (e) { toast(e.message); }
+}
+async function sendAll() {
+  const list = buildReminders().need.filter(i => phoneIntl(i.c.phone));
+  if (!list.length) return toast('Nothing to send');
+  if (!confirm('Send ' + plural(list.length, 'text') + ' now?')) return;
+  let ok = 0, err = '';
+  toast('Sending…');
+  for (const i of list) {
+    const id = i.kind === 'cert' ? i.c.id : i.j.id, m = await buildMessage(i.kind, id);
+    try { await gwSend(m.num, m.body); msgCtx = { kind: i.kind, id }; markTexted(); ok++; }
+    catch (e) { err = e.message; break; }
+  }
+  render(); toast(err ? ok + ' sent, then stopped: ' + err : ok + ' of ' + list.length + ' sent');
+}
+async function gwTest() {
+  const n = phoneIntl($('#gwTestNum').value); if (!n) return toast('Enter a number to test with');
+  try { toast('Sending…'); await gwSend(n, 'Test message from Job Reminders'); toast('Test text sent'); }
+  catch (e) { toast(e.message); }
+}
+
+/* ---------- actions ---------- */
+function markPaid(id) {
+  const j = db.jobs.find(x => x.id === id); j.paid = true; j.paidDate = today();
+  save(); render(); toast('Marked as paid');
+}
+function renewForm(id) {
+  const c = cust(id);
+  modal(`<h3>Certificate renewed</h3><div class="sub">${esc(c.name)}</div>
+    <label>Date the new certificate was issued</label><input type="date" id="rdate" value="${today()}">
+    <div class="actions"><button class="primary" onclick="saveRenew('${id}')">Save</button><button onclick="closeModal()">Cancel</button></div>`);
+}
+function saveRenew(id) {
+  const v = $('#rdate').value; if (!v) return toast('Pick a date');
+  const c = cust(id); c.certDate = v; c.certDue = ''; c.certReminded = null;
+  save(); closeModal(); render(); toast('Next reminder set for ' + fmtDate(addYear(v)));
+}
+
+/* ---------- forms ---------- */
+function customerForm(id) {
+  const c = id ? cust(id) : { name: '', phone: '', address: '', certDate: '' };
+  modal(`<h3>${id ? 'Edit' : 'New'} customer</h3>
+    <label>Name</label><input id="cn" value="${esc(c.name)}" autocomplete="off">
+    <label>Mobile number</label><input id="cp" type="tel" inputmode="tel" value="${esc(c.phone)}" placeholder="07123 456789">
+    <label>Property address (optional)</label><input id="ca" value="${esc(c.address || '')}">
+    <label>Last gas certificate issued (optional)</label><input id="cd" type="date" value="${esc(c.certDate || '')}">
+    <div class="hint">Leave blank if they don’t need annual gas certificate reminders. The reminder is worked out as 12 months from this date.</div>
+    <div class="actions"><button class="primary" onclick="saveCustomer('${id || ''}')">Save</button><button onclick="closeModal()">Cancel</button>
+    ${id ? `<button onclick="closeModal();newCpFor('${id}')">New CP12</button><button class="danger" onclick="delCustomer('${id}')">Delete</button>` : ''}</div>`);
+}
+function saveCustomer(id) {
+  const name = $('#cn').value.trim(); if (!name) return toast('Enter a name');
+  const data = { name, phone: $('#cp').value.trim(), address: $('#ca').value.trim(), certDate: $('#cd').value || '' };
+  if (id) { const c = cust(id); if (c.certDate !== data.certDate) { c.certReminded = null; c.certDue = ''; } Object.assign(c, data); }
+  else db.customers.push({ id: uid(), certReminded: null, ...data });
+  save(); closeModal(); render();
+}
+function delCustomer(id) {
+  const n = db.jobs.filter(j => j.customerId === id).length;
+  if (!confirm('Delete this customer' + (n ? ' and their ' + plural(n, 'job') : '') + '?')) return;
+  db.customers = db.customers.filter(c => c.id !== id);
+  db.jobs = db.jobs.filter(j => j.customerId !== id);
+  save(); closeModal(); render();
+}
+function jobForm(id) {
+  if (!db.customers.length) { toast('Add a customer first'); return customerForm(); }
+  const j = id ? db.jobs.find(x => x.id === id) : { customerId: db.customers[0].id, desc: '', amount: '', completed: today(), due: addDays(today(), db.settings.terms), paid: false };
+  modal(`<h3>${id ? 'Edit' : 'New'} job</h3>
+    <label>Customer</label><select id="jc">${db.customers.slice().sort((a, b) => a.name.localeCompare(b.name)).map(c => `<option value="${c.id}" ${c.id === j.customerId ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}</select>
+    <label>What was the job?</label><input id="jd" value="${esc(j.desc)}" placeholder="Boiler service">
+    <label>Amount owed (£)</label><input id="ja" type="number" step="0.01" min="0" inputmode="decimal" value="${esc(j.amount)}">
+    <div class="twocol"><div><label>Completed</label><input id="jcd" type="date" value="${j.completed}" onchange="autoDue()"></div>
+    <div><label>Payment due</label><input id="jdd" type="date" value="${j.due}" oninput="this.dataset.touched=1"></div></div>
+    ${id ? `<label class="check"><input type="checkbox" id="jp" ${j.paid ? 'checked' : ''}> Paid</label>
+    <div class="actions"><button onclick="previewInvoice('${id}')">View PDF invoice${j.invoiceNo ? ' (' + esc(j.invoiceNo) + ')' : ''}</button></div>` : ''}
+    <div class="actions"><button class="primary" onclick="saveJob('${id || ''}')">Save</button><button onclick="closeModal()">Cancel</button>
+    ${id ? `<button class="danger" onclick="delJob('${id}')">Delete</button>` : ''}</div>`);
+}
+function autoDue() {
+  const dd = $('#jdd'); if (dd.dataset.touched) return;
+  const v = $('#jcd').value; if (v) dd.value = addDays(v, db.settings.terms);
+}
+function saveJob(id) {
+  const desc = $('#jd').value.trim(), amount = parseFloat($('#ja').value);
+  if (!desc) return toast('Describe the job');
+  if (!(amount >= 0)) return toast('Enter the amount owed');
+  const completed = $('#jcd').value || today(), due = $('#jdd').value || addDays(completed, db.settings.terms);
+  const data = { customerId: $('#jc').value, desc, amount, completed, due };
+  if (id) {
+    const j = db.jobs.find(x => x.id === id), paid = $('#jp').checked;
+    if (paid && !j.paid) j.paidDate = today();
+    if (!paid) j.paidDate = null;
+    if (j.due !== due) j.lastReminded = null;
+    Object.assign(j, data, { paid });
+  } else {
+    const no = 'INV-' + String(db.settings.nextInvoice || 1).padStart(4, '0');
+    db.settings.nextInvoice = (db.settings.nextInvoice || 1) + 1;
+    db.jobs.push({ id: uid(), paid: false, lastReminded: null, billSent: null, invoiceNo: no, ...data });
+  }
+  save(); closeModal(); render();
+}
+function delJob(id) {
+  if (!confirm('Delete this job?')) return;
+  db.jobs = db.jobs.filter(j => j.id !== id); save(); closeModal(); render();
+}
+
+/* ---------- data ---------- */
+function exportData() {
+  const blob = new Blob([JSON.stringify({ ...db, cp12: CP.data() }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'job-reminders-backup-' + today() + '.json'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+function importData(input) {
+  const f = input.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const d = JSON.parse(r.result);
+      if (!Array.isArray(d.customers) || !Array.isArray(d.jobs)) throw 0;
+      if (!confirm('Replace everything in the app with this backup?')) return;
+      db = { customers: d.customers, jobs: d.jobs, settings: { ...DEF.settings, ...(d.settings || {}) } };
+      save(); if (d.cp12) CP.importObj(d.cp12); render(); toast('Backup restored');
+    } catch (e) { toast('That file isn’t a valid backup'); }
+  };
+  r.readAsText(f); input.value = '';
+}
+function wipe() {
+  if (!confirm('Erase all customers, bills and settings from this device? (CP12 records are kept; delete those under CP12 → Gas Safe details.)')) return;
+  db = JSON.parse(JSON.stringify(DEF)); save(); render(); toast('All data erased');
+}
+function loadDemo() {
+  if (db.customers.length && !confirm('Add demo data alongside your existing data?')) return;
+  const t = today(), a = uid(), b = uid(), c = uid(), d = uid();
+  db.customers.push(
+    { id: a, name: 'Sarah Jones', phone: '07700 900111', address: '14 Elm Road', certDate: addDays(t, -350), certReminded: null },
+    { id: b, name: 'Mark Patel', phone: '07700 900222', address: '3 Mill Lane', certDate: addDays(t, -380), certReminded: addDays(t, -2) },
+    { id: c, name: 'Helen Wright', phone: '07700 900333', address: '', certDate: '', certReminded: null },
+    { id: d, name: 'Tom Evans', phone: '', address: '9 High Street', certDate: addDays(t, -200), certReminded: null });
+  db.jobs.push(
+    { id: uid(), customerId: a, desc: 'Boiler service', amount: 85, completed: addDays(t, -20), due: addDays(t, -6), paid: false, lastReminded: null },
+    { id: uid(), customerId: c, desc: 'Radiator replacement', amount: 240, completed: addDays(t, -10), due: addDays(t, 2), paid: false, lastReminded: null, billSent: null },
+    { id: uid(), customerId: b, desc: 'Tap repair', amount: 60, completed: addDays(t, -40), due: addDays(t, -26), paid: true, paidDate: addDays(t, -24), lastReminded: null });
+  save(); render(); toast('Demo data added');
+}
+
+// ======================================================================
+// CP12 gas safety records (from the CP12 app)
+// ======================================================================
+const CP = (() => {
 const KEY = "cp12-db-v3";
 const OLD_KEY = "cp12-record-v2";
 const $ = s => document.querySelector(s);
@@ -312,7 +955,7 @@ const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safe = s => String(s ?? "").replace(/[^A-Za-z0-9-]/g, "_");
 
-let db = load();
+let cpdb = load();
 let draftId = null, draftSigs = {}, certId = null, draftTimer = null;
 const pads = {};
 
@@ -325,20 +968,19 @@ function load() {
   return { jobs: [], appl: [], profile: {} };
 }
 function persist() {
-  try { localStorage.setItem(KEY, JSON.stringify(db)); return true; } catch (e) { return false; }
+  try { localStorage.setItem(KEY, JSON.stringify(cpdb)); return true; } catch (e) { return false; }
 }
 function migrate() {
-  if (db.migrated) return;
+  if (cpdb.migrated) return;
   try {
     const old = JSON.parse(localStorage.getItem(OLD_KEY) || "null");
     if (old && Object.values(old).some(v => v)) {
-      db.jobs.push({ id: "old1", created: Date.now(), updated: Date.now(), data: old, sigs: {} });
+      cpdb.jobs.push({ id: "old1", created: Date.now(), updated: Date.now(), data: old, sigs: {} });
     }
   } catch (e) {}
-  db.migrated = true;
+  cpdb.migrated = true;
   persist();
 }
-function toast(m) { $("#status").textContent = m; }
 function twoTap(btn, action) {
   if (btn.dataset.armed) { delete btn.dataset.armed; action(); return; }
   const old = btn.textContent;
@@ -466,7 +1108,7 @@ document.addEventListener("input", e => { if (e.target.closest("#editView")) sch
 function autofill(prefix) {
   const name = ($(`#editView [data-k="${prefix}_name"]`).value || "").trim().toLowerCase();
   if (!name) return;
-  const match = [...db.jobs].reverse().find(j => String(j.data[`${prefix}_name`] || "").trim().toLowerCase() === name);
+  const match = [...cpdb.jobs].reverse().find(j => String(j.data[`${prefix}_name`] || "").trim().toLowerCase() === name);
   if (!match) return;
   ["addr", "pc", "tel"].forEach(f => {
     const el = $(`#editView [data-k="${prefix}_${f}"]`);
@@ -474,8 +1116,9 @@ function autofill(prefix) {
   });
   scheduleDraft();
 }
-document.addEventListener("change", e => {
+$("#cpRoot").addEventListener("change", e => {
   const k = e.target.dataset && e.target.dataset.k;
+  if (k === "customerId") applyCustomer(e.target.value);
   if (k === "site_name") autofill("site");
   if (k === "cust_name") autofill("cust");
 });
@@ -486,11 +1129,11 @@ function fillList(id, values) {
   document.getElementById(id).innerHTML = uniq(values).sort().map(v => `<option value="${esc(v)}">`).join("");
 }
 function applValues(k) {
-  return [...db.appl.map(a => a[k]), ...db.jobs.flatMap(j => [1, 2, 3, 4, 5].map(r => j.data[`appl_${r}_${k}`]))];
+  return [...cpdb.appl.map(a => a[k]), ...cpdb.jobs.flatMap(j => [1, 2, 3, 4, 5].map(r => j.data[`appl_${r}_${k}`]))];
 }
 function refreshLists() {
-  fillList("dl-sites", db.jobs.map(j => j.data.site_name));
-  fillList("dl-custs", db.jobs.map(j => j.data.cust_name));
+  fillList("dl-sites", cpdb.jobs.map(j => j.data.site_name));
+  fillList("dl-custs", [...cpdb.jobs.map(j => j.data.cust_name), ...db.customers.map(c => c.name)]);
   fillList("dl-type", applValues("type"));
   fillList("dl-mfr", applValues("mfr"));
   fillList("dl-model", applValues("model"));
@@ -498,11 +1141,11 @@ function refreshLists() {
 
 // ---------- open / save job ----------
 function openEdit(id) {
-  const job = id ? db.jobs.find(j => j.id === id) : null;
+  const job = id ? cpdb.jobs.find(j => j.id === id) : null;
   draftId = job ? job.id : null;
   let data = job ? job.data : {};
   draftSigs = job ? { ...(job.sigs || {}) } : {};
-  let prof = job ? null : (db.profile || {});
+  let prof = job ? null : withBizDefaults(cpdb.profile || {});
   try {
     const dr = JSON.parse(localStorage.getItem("cp12-draft") || "null");
     if (dr && dr.id === draftId) {
@@ -512,6 +1155,7 @@ function openEdit(id) {
     }
   } catch (e) {}
   refreshLists();
+  fillCustomerSelect();
   setFormValues(data, prof);
   if (!job && !$("#serialIn").value) $("#serialIn").value = nextSerial();
   showView("edit");
@@ -519,7 +1163,7 @@ function openEdit(id) {
 
 // Next serial: one more than the highest all-number serial used so far (first is 0001)
 function nextSerial() {
-  const nums = db.jobs.map(j => String(j.data.serial || "").trim())
+  const nums = cpdb.jobs.map(j => String(j.data.serial || "").trim())
     .filter(v => /^\d+$/.test(v)).map(v => parseInt(v, 10));
   const next = (nums.length ? Math.max(...nums) : 0) + 1;
   return String(next).padStart(4, "0");
@@ -529,21 +1173,22 @@ function saveJob() {
   const data = gather();
   if (!data.serial) { toast("Enter the serial number first"); $("#serialIn").focus(); return null; }
   const now = Date.now();
-  let job = draftId ? db.jobs.find(j => j.id === draftId) : null;
+  let job = draftId ? cpdb.jobs.find(j => j.id === draftId) : null;
   if (job) {
     job.data = data; job.sigs = { ...draftSigs }; job.updated = now;
   } else {
     job = { id: now.toString(36) + Math.random().toString(36).slice(2, 6), created: now, updated: now, data, sigs: { ...draftSigs } };
-    db.jobs.push(job);
+    cpdb.jobs.push(job);
     draftId = job.id;
   }
   for (let r = 1; r <= 5; r++) {
     const a = { type: data[`appl_${r}_type`] || "", mfr: data[`appl_${r}_mfr`] || "", model: data[`appl_${r}_model`] || "" };
-    if ((a.mfr || a.model) && !db.appl.some(b => b.type === a.type && b.mfr === a.mfr && b.model === a.model)) db.appl.push(a);
+    if ((a.mfr || a.model) && !cpdb.appl.some(b => b.type === a.type && b.mfr === a.mfr && b.model === a.model)) cpdb.appl.push(a);
   }
+  const linked = syncCustomer(job);
   if (!persist()) { toast("Could not save on this device. Use Copy backup in Settings."); return job; }
   try { localStorage.removeItem("cp12-draft"); } catch (e) {}
-  toast("Saved " + data.serial);
+  toast("Saved " + data.serial + (linked ? ". " + linked : ""));
   return job;
 }
 
@@ -572,7 +1217,7 @@ function jobCard(j) {
 }
 function renderJobs() {
   const q = ($("#search").value || "").trim().toLowerCase();
-  const list = [...db.jobs].sort((a, b) => b.updated - a.updated);
+  const list = [...cpdb.jobs].sort((a, b) => b.updated - a.updated);
   const due = list.map(j => ({ j, days: daysLeft(j) })).filter(x => x.days !== null && x.days <= 30).sort((a, b) => a.days - b.days);
   const banner = $("#due");
   if (due.length) {
@@ -583,7 +1228,7 @@ function renderJobs() {
   } else banner.hidden = true;
   const items = list.filter(j => !q || [j.data.serial, j.data.site_name, j.data.site_addr, j.data.site_pc, j.data.cust_name].some(v => String(v || "").toLowerCase().includes(q)));
   $("#jobList").innerHTML = items.length ? items.map(jobCard).join("")
-    : `<p class="empty">${db.jobs.length ? "No jobs match your search." : "No jobs yet. Tap New CP12 to start your first record."}</p>`;
+    : `<p class="empty">${cpdb.jobs.length ? "No records match your search." : "No CP12 records yet. Tap New CP12 to start your first one."}</p>`;
 }
 $("#search").addEventListener("input", renderJobs);
 
@@ -671,17 +1316,18 @@ function certHTML(job) {
 function fitCert() {
   const cert = $("#cert");
   const avail = document.querySelector(".certwrap").clientWidth - 24;
+  if (avail <= 0) return;
   cert.style.zoom = Math.min(1, avail / 1125);
 }
 function openCert(id) {
-  const job = db.jobs.find(j => j.id === id);
+  const job = cpdb.jobs.find(j => j.id === id);
   if (!job) return;
   certId = id;
   $("#cert").innerHTML = certHTML(job);
   showView("cert");
   fitCert();
 }
-function currentCertJob() { return db.jobs.find(j => j.id === certId); }
+function currentCertJob() { return cpdb.jobs.find(j => j.id === certId); }
 window.addEventListener("resize", () => { if (!$("#certView").hidden) fitCert(); });
 
 // ---------- sharing, PDF and reminders ----------
@@ -738,28 +1384,28 @@ function reminderICS() {
 // ---------- appliance library ----------
 function renderAppl() {
   const list = $("#applList");
-  list.innerHTML = db.appl.length ? db.appl.map((a, i) =>
+  list.innerHTML = cpdb.appl.length ? cpdb.appl.map((a, i) =>
     `<div class="it"><span>${esc(a.type)} ${esc(a.mfr)} ${esc(a.model)}</span><button class="danger" data-del-appl="${i}">Delete</button></div>`).join("")
     : `<div class="it"><span class="muted">No appliances saved yet.</span></div>`;
 }
 function addAppl() {
   const a = { type: $("#aType").value.trim(), mfr: $("#aMfr").value.trim(), model: $("#aModel").value.trim() };
   if (!a.mfr && !a.model && !a.type) { toast("Enter a type, make or model"); return; }
-  db.appl.push(a); persist();
+  cpdb.appl.push(a); persist();
   ["#aType", "#aMfr", "#aModel"].forEach(s => $(s).value = "");
   renderAppl(); toast("Appliance saved");
 }
 
 // ---------- settings and backup ----------
 function loadSettings() {
-  $$("#settingsView [data-p]").forEach(el => el.value = (db.profile || {})[el.dataset.p] || "");
+  $$("#settingsView [data-p]").forEach(el => el.value = (cpdb.profile || {})[el.dataset.p] || "");
 }
 function saveProfile() {
   const p = {};
   $$("#settingsView [data-p]").forEach(el => p[el.dataset.p] = el.value.trim());
-  db.profile = p; persist(); toast("Business details saved");
+  cpdb.profile = p; persist(); toast("Business details saved");
 }
-function backupText() { return JSON.stringify(db, null, 2); }
+function backupText() { return JSON.stringify(cpdb, null, 2); }
 async function copyBackup(btn) {
   const text = backupText();
   try { await navigator.clipboard.writeText(text); btn.textContent = "Copied"; }
@@ -776,19 +1422,19 @@ function importText(txt) {
   try {
     const obj = JSON.parse(txt);
     if (!obj || !Array.isArray(obj.jobs)) throw new Error("bad");
-    const ids = new Set(db.jobs.map(j => j.id));
-    obj.jobs.forEach(j => { if (!ids.has(j.id)) db.jobs.push(j); });
+    const ids = new Set(cpdb.jobs.map(j => j.id));
+    obj.jobs.forEach(j => { if (!ids.has(j.id)) cpdb.jobs.push(j); });
     (obj.appl || []).forEach(a => {
-      if (!db.appl.some(b => b.type === a.type && b.mfr === a.mfr && b.model === a.model)) db.appl.push(a);
+      if (!cpdb.appl.some(b => b.type === a.type && b.mfr === a.mfr && b.model === a.model)) cpdb.appl.push(a);
     });
-    if (obj.profile && !Object.keys(db.profile || {}).length) db.profile = obj.profile;
+    if (obj.profile && !Object.keys(cpdb.profile || {}).length) cpdb.profile = obj.profile;
     persist();
-    toast(`Restored ${obj.jobs.length} job(s)`);
+    toast(`Restored ${obj.jobs.length} CP12 record(s)`);
     renderJobs();
   } catch (e) { toast("That backup could not be read."); }
 }
 function clearAll() {
-  db = { jobs: [], appl: [], profile: {}, migrated: true };
+  cpdb = { jobs: [], appl: [], profile: {}, migrated: true };
   persist(); renderJobs(); toast("All records deleted on this phone");
 }
 
@@ -809,14 +1455,14 @@ const ACTIONS = {
   restoreText: () => importText($("#pasteBackup").value),
   clearAll: t => twoTap(t, clearAll),
 };
-document.addEventListener("click", e => {
+$("#cpRoot").addEventListener("click", e => {
   const t = e.target.closest("button");
   if (!t) return;
   if (t.dataset.go) { if (t.dataset.go === "edit-new") openEdit(null); else showView(t.dataset.go); return; }
   if (t.dataset.open) return openEdit(t.dataset.open);
   if (t.dataset.cert) return openCert(t.dataset.cert);
-  if (t.dataset.del) return twoTap(t, () => { db.jobs = db.jobs.filter(j => j.id !== t.dataset.del); persist(); renderJobs(); toast("Job deleted"); });
-  if (t.dataset.delAppl !== undefined) return twoTap(t, () => { db.appl.splice(+t.dataset.delAppl, 1); persist(); renderAppl(); });
+  if (t.dataset.del) return twoTap(t, () => { cpdb.jobs = cpdb.jobs.filter(j => j.id !== t.dataset.del); persist(); renderJobs(); toast("Record deleted"); });
+  if (t.dataset.delAppl !== undefined) return twoTap(t, () => { cpdb.appl.splice(+t.dataset.delAppl, 1); persist(); renderAppl(); });
   if (t.id && ACTIONS[t.id]) return ACTIONS[t.id](t);
 });
 $("#importFile").addEventListener("change", e => {
@@ -830,9 +1476,86 @@ migrate();
 refreshLists();
 showView("jobs");
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+
+// ---------- link certificates to the customer list (the reminders side of the app) ----------
+const DEFAULT_BIZ = "Your Business Name";
+function withBizDefaults(p) {
+  const s = db.settings || {}, o = { ...p };
+  if (!o.biz_name && s.business && s.business !== DEFAULT_BIZ) o.biz_name = s.business;
+  if (!o.biz_addr && s.bizAddress) o.biz_addr = s.bizAddress.split("\n")[0];
+  if (!o.biz_tel && s.bizContact) o.biz_tel = s.bizContact;
+  return o;
+}
+function splitAddr(a) {
+  a = String(a || "").trim();
+  const m = a.match(/[,\s]*([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})\s*$/i);
+  return m ? { addr: a.slice(0, m.index).replace(/[,\s]+$/, ""), pc: m[1].toUpperCase() } : { addr: a, pc: "" };
+}
+const joinAddr = (addr, pc) => [addr, pc].filter(Boolean).join(", ");
+function fillCustomerSelect() {
+  const sel = $("#cpCust"), cur = sel.value;
+  sel.innerHTML = '<option value="">None (type the details below)</option>' +
+    [...db.customers].sort((a, b) => a.name.localeCompare(b.name)).map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
+  sel.value = cur;
+}
+function setIf(key, val, overwrite) {
+  const el = $(`#editView [data-k="${key}"]`);
+  if (el && (overwrite || !el.value)) el.value = val || "";
+}
+function applyCustomer(id) {
+  const c = db.customers.find(x => x.id === id);
+  if (!c) return;
+  const a = splitAddr(c.address);
+  setIf("cust_name", c.name, true); setIf("cust_tel", c.phone, true);
+  setIf("cust_addr", a.addr, true); setIf("cust_pc", a.pc, true);
+  setIf("site_name", c.name); setIf("site_tel", c.phone); setIf("site_addr", a.addr); setIf("site_pc", a.pc);
+  scheduleDraft();
+}
+// After saving a certificate: find (or create) the customer and set up their next gas reminder
+function syncCustomer(job) {
+  const d = job.data;
+  let c = d.customerId && db.customers.find(x => x.id === d.customerId);
+  if (!c && d.cust_name && d.cust_name.trim()) {
+    const nm = d.cust_name.trim().toLowerCase();
+    c = db.customers.find(x => x.name.trim().toLowerCase() === nm);
+    if (!c) {
+      c = { id: uid(), name: d.cust_name.trim(), phone: d.cust_tel || "", address: joinAddr(d.cust_addr, d.cust_pc), certDate: "", certReminded: null };
+      db.customers.push(c);
+    }
+  }
+  if (!c) return "";
+  d.customerId = c.id;
+  if (!c.phone && d.cust_tel) c.phone = d.cust_tel;
+  if (!c.address && d.cust_addr) c.address = joinAddr(d.cust_addr, d.cust_pc);
+  let msg = "Linked to " + c.name;
+  if (d.date_checked && (!c.certDate || d.date_checked >= c.certDate)) {
+    c.certDate = d.date_checked; c.certDue = d.next_due || ""; c.certReminded = null;
+    msg = "Gas reminder set for " + c.name + " (due " + fmtDate(certExpiry(c)) + ")";
+  }
+  save();
+  return msg;
+}
+function newFor(id) {
+  openEdit(null);
+  $("#cpCust").value = id;
+  applyCustomer(id);
+}
+function enter() {
+  const v = ["jobs", "edit", "cert", "appl", "settings"].find(n => !$("#" + n + "View").hidden) || "jobs";
+  if (v === "jobs") renderJobs();
+  if (v === "edit") Object.values(pads).forEach(p => p.size());
+  if (v === "cert") fitCert();
+  window.scrollTo(0, 0);
+}
+return { enter, newFor, data: () => cpdb, importObj: o => importText(JSON.stringify(o)) };
+})();
+
+render();
+pull();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
 </script>
 
-<!-- PDF tools (loaded from cdnjs; needed only for Save / share PDF) -->
+<!-- PDF tools for CP12 certificates (loaded from cdnjs; needed only for Save / share PDF) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
